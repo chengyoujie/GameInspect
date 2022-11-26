@@ -1,0 +1,39 @@
+{
+    "manifest_version": 3,
+    "name": "GameInspect",
+    "author": "chengyoujie",
+    "version": "1.0.1",
+    "description": "H5 游戏通用的检查工具",
+    "devtools_page": "index.html",
+    "permissions": ["tabs", "storage", "activeTab", "nativeMessaging"],
+    "background":{
+        "service_worker":"js/background.js"
+    },
+    "content_scripts":[
+        {
+            "matches":["<all_urls>"],
+            "all_frames": true,
+            "match_origin_as_fallback": true,
+            "js":[
+                "js/content.js"
+            ],
+            "run_at":"document_end"
+        }
+    ],
+    "icons": {
+        "512": "icon.png"
+    },
+    "content_security_policy": {
+        "script-src": "self",
+        "object-src": "self", 
+        "wasm-unsafe-eval": true
+    },
+    "web_accessible_resources":
+    [
+        {
+            "resources":["*/*", "*"],
+            "matches":["<all_urls>"]
+        }
+    ]
+
+}
