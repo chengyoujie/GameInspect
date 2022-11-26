@@ -1,6 +1,3 @@
-
-import { TreeNode, PropNode } from "../../../common/TreeNode";
-import { EngineManager } from "../../EngineManager";
 import { IEngineInfo } from "../../IEngineInfo";
 import { CocosStageMask } from "./CocosStageMask";
 

@@ -1,5 +1,3 @@
-import { TreeNode, PropNode } from "../../../common/TreeNode";
-import { EngineManager } from "../../EngineManager";
 import { IEngineInfo } from "../../IEngineInfo";
 import { EgretMouseEvent } from "./EgretMouseEvent";
 import { EgretStageRectMask } from "./EgretStageRectMask";
