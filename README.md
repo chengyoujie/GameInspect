@@ -10,7 +10,7 @@
 
 2.1 下载`release`目录到本地 `git clone https://github.com/chengyoujie/GameInspect.git`
 
-2.2 打开 [chrome://extensions/](chrome://extensions/) 
+2.2 chrome浏览器内打开链接  [chrome://extensions/](chrome://extensions/) 
 
 2.3 打开**右上角**的**开发者模式**开关
 
@@ -56,7 +56,3 @@ declare interface window{
     getGameInspectUserCostomEngine?():IUserCostomEngine;
 }
 ```
-
-## 5.支持
-
-![支持](https://img-blog.csdnimg.cn/4ad821883c734690a4641773d1551504.png)
