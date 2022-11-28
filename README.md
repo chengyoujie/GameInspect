@@ -44,7 +44,7 @@
 
 ## 4. 自定义扩展
 
-本插件现已支持常用的 `Egret`, `Laya`, `CocosCreate`, `Cocos2dx-js`,   其中 `CocosCreate`, `Cocos2dx-js`支持不太全。也可以将其他引擎的实现或现有引擎的优化发送到`1137815160@qq.com`邮箱或者提交到`Github`中
+本插件现已支持常用的 `Egret`, `Laya`, `CocosCreate`, `Cocos2dx-js`, `PIXI`   其中 `CocosCreate`, `Cocos2dx-js`, `PIXI` 支持不太全。也可以将其他引擎的实现或现有引擎的优化发送到`1137815160@qq.com`邮箱或者提交到`Github`中
 
 如不能满足需求或者使用其他引擎，可以在游戏中实现 （具体参考 `src/inspector/IUserCostomEngine.ts` 和 `src/inspector/IEngineInfo.ts`）
 
