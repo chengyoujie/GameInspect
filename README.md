@@ -1,4 +1,4 @@
-# Chrome 扩展   H5 游戏结构检查器  GameInspect  支持 Laya, egret, cocosCreate, cocos2d-js
+# Chrome 扩展   H5 游戏结构检查器  GameInspect  支持 Laya, egret, cocosCreate, cocos2d-js, PIXI
 
 ## 1. 说明
 
