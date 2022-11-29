@@ -8,7 +8,7 @@
 
 ## 2.安装
 
-2.1 下载`release`目录到本地 `git clone https://github.com/chengyoujie/GameInspect.git`
+2.1 下载`release`目录到本地 `git clone https://github.com/chengyoujie/GameInspect.git` 或者直接下载  [https://chengyoujie.github.io/GameInspect/GameInspect_Alpha_v1.0.1.rar](https://chengyoujie.github.io/GameInspect/GameInspect_Alpha_v1.0.1.rar) 
 
 2.2 chrome浏览器内打开链接  [chrome://extensions/](chrome://extensions/) 
 
