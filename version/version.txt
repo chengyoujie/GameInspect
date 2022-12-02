@@ -1,8 +1,8 @@
 ##版本日志
 
-### v1.0.2(GameInspect_Alpha_v1.0.1)
+### v1.0.2(GameInspect_Alpha_v1.0.1.rar)
 测试
 
 
-### v1.0.1(GameInspect_Alpha_v1.0.1)
+### v1.0.1(GameInspect_Alpha_v1.0.1.rar)
 1.初始化项目
