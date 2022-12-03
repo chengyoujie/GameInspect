@@ -1,3 +1,4 @@
+import { Utils } from "../../../common/Utils";
 import { IEngineInfo } from "../../IEngineInfo";
 import { EgretMouseEvent } from "./EgretMouseEvent";
 import { EgretStageRectMask } from "./EgretStageRectMask";
@@ -12,6 +13,7 @@ export class EgretEngineInfo implements IEngineInfo<egret.DisplayObject> {
     enableMouseEvent: boolean;
     stage: egret.DisplayObject;
     private _mask:EgretStageRectMask;
+    private _clssNameArray:{name:string, class:any}[] = [];
 
     haveEngine(): boolean {
         return !!(window["egret"] && window["egret"]["sys"] && window["egret"]["sys"]["$TempStage"]);
@@ -22,6 +24,11 @@ export class EgretEngineInfo implements IEngineInfo<egret.DisplayObject> {
        s.baseCls = egret.DisplayObject;
        s.stage = egret.sys.$TempStage;
        s._mask = new EgretStageRectMask();
+       
+       let obj = window["egret"];
+       for(let key in obj){
+           s._clssNameArray.push({name:key, class:obj[key]})
+       }
     }
     start(onClickFun: (target: egret.DisplayObject) => void, onMouseMoveFun: (target: egret.DisplayObject) => void): void {
         let s = this;
@@ -102,6 +109,16 @@ export class EgretEngineInfo implements IEngineInfo<egret.DisplayObject> {
         else if (egret_fps_panel) {
             egret_fps_panel.style.visibility = "hidden";
         }
+    }
+
+    
+    getClassName(obj: egret.DisplayObject): string {
+        if(typeof obj == "number" || typeof obj == "string")return obj;
+        let s = this;
+        for(let i=0; i<s._clssNameArray.length; i++){
+            if(s._clssNameArray[i].class == obj.constructor)return s._clssNameArray[i].name;
+        }
+        return Utils.getClassName(obj);
     }
     
 }

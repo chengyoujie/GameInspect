@@ -14,6 +14,11 @@ export class LayaStageRectMask  {
         this._rect = new Laya.Rectangle();
         this._tempPoint = new Laya.Point();
         this._mask.name = ConstVars.StageMaskName;
+        if(Laya.version.startsWith("1.")){
+            this._mask.alpha = 0.3;
+        }else{
+            this._mask.alpha = 1;
+        }
     }
 
     public showRect(obj:Laya.Sprite){
@@ -38,6 +43,7 @@ export class LayaStageRectMask  {
         s._rect.height = Math.max(20, obj.height)*obj.scaleY;
         s._mask.graphics.clear();
         s._mask.graphics.drawRect(s._rect.x, s._rect.y, s._rect.width, s._rect.height, "#00C80022", "#00C800ee", 1);
+        
     }
 
 
@@ -50,6 +56,5 @@ export class LayaStageRectMask  {
         }
         s._bindObj = null;
         s._mask.removeSelf();
-        s._rect.reset();
     }
 }

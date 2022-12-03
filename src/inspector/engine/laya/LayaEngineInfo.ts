@@ -1,3 +1,4 @@
+import { Utils } from "../../../common/Utils";
 import { IEngineInfo } from "../../IEngineInfo";
 import { LayaMouseEvent } from "./LayaMouseEvent";
 import { LayaStageRectMask } from "./LayaStageRectMask";
@@ -10,6 +11,7 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
     version: string;
     baseCls: typeof Laya.Sprite;
     private _mask:LayaStageRectMask;
+    private _clssNameArray:{name:string, class:any}[] = [];
 
     getParent(obj: Laya.Sprite): Laya.Sprite {
         return obj.parent as Laya.Sprite;
@@ -57,11 +59,16 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
         s.stage = Laya.stage;
         s.version = Laya.version;
         s._mask = new LayaStageRectMask();
+        
+        let obj = window["Laya"];
+        for(let key in obj){
+            s._clssNameArray.push({name:key, class:obj[key]})
+        }
     }
 
     start(onClickFun:(target:Laya.Sprite)=>void, onMouseMoveFun:(target:Laya.Sprite)=>void): void {
         let s = this;
-        LayaMouseEvent.start();
+        LayaMouseEvent.start(this);
         
         Laya.stage.on(LayaMouseEvent.MOUSE_DOWN, this, (target:Laya.Sprite)=>{
             onClickFun.call(s, target)
@@ -88,4 +95,13 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
         }
     }
 
+    
+    getClassName(obj: Laya.Sprite): string {
+        if(typeof obj == "number" || typeof obj == "string")return obj;
+        let s = this;
+        for(let i=0; i<s._clssNameArray.length; i++){
+            if(s._clssNameArray[i].class == obj.constructor)return s._clssNameArray[i].name;
+        }
+        return Utils.getClassName(obj);
+    }
 }
