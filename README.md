@@ -4,11 +4,11 @@
 
 仿照 `egret Inspect ` 制作的通用H5游戏列表查看器， 方便查看游戏结构， 修改属性，
 
-![预览](https://img-blog.csdnimg.cn/51196edbea9d49ca8b8cf2cf47b9c78d.png)
+![预览](https://img-blog.csdnimg.cn/9d2663f7116f492d8015b80b3ed11842.png)
 
 ## 2.安装
 
-2.1 下载`release`目录到本地 `git clone https://github.com/chengyoujie/GameInspect.git` 或者直接下载  [https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.1.rar](https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.1.rar) 
+2.1 下载到本地 `git clone https://github.com/chengyoujie/GameInspect.git` 或者直接下载  [https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.1.rar](https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.2.rar) 
 
 2.2 chrome浏览器内打开链接  [chrome://extensions/](chrome://extensions/) 
 
@@ -20,9 +20,9 @@
 
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/d732650e2c4f4564a4c8cd4138bca198.png)
 
-选择`release`目录
+选择`dist`目录
 
-![选择文件夹](https://img-blog.csdnimg.cn/fcdd4c7ae60b4cac8208db20da65a53a.png)
+![选择文件夹](https://img-blog.csdnimg.cn/34129de5d0324bafb1621b05c6b3e5bf.png)
 
 点击选择文件夹即可， 安装成功后如下图：
 
@@ -56,3 +56,18 @@ declare interface window{
     getGameInspectUserCostomEngine?():IUserCostomEngine;
 }
 ```
+
+## 5.注入代码
+可以把自己的代码注入到指定网站
+用户可以将自己的代码注入到指定的网站
+最多可以注入`5M`左右
+匹配规则说明：
+```
+执行一次：主要通过执行按钮执行， 不会匹配到任何网站
+当前网址：下次进入与当前浏览器地址栏的地址相同时自动执行
+游戏地址：引擎加载完毕后，找到含有引擎的iframe的地址，下次进入是如果匹配到对应的地址则执行代码
+自 定 义：用户自己定义匹配规则，return true 表示匹配成功， return false 表示匹配失败
+```
+操作说明：
+ctr+s 保存代码
+![注入代码](https://img-blog.csdnimg.cn/67c882a55773494a98d4e6dd6987ce9d.png)

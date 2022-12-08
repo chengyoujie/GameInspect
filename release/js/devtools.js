@@ -1,2 +1,0 @@
-chrome.devtools.panels.create("GameInspect","icon.png","gameInspect.html",(function(n){n.onShown.addListener((function(n){})),n.onHidden.addListener((function(){}))}));
-//# sourceMappingURL=devtools.js.map
