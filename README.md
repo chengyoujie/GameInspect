@@ -58,6 +58,8 @@ declare interface window{
 ```
 
 ## 5.注入代码
+![注入代码](https://img-blog.csdnimg.cn/b35c39991dda4e2faa03fe03fa0ea0db.png)
+
 可以把自己的代码注入到指定网站
 用户可以将自己的代码注入到指定的网站
 最多可以注入`5M`左右
@@ -69,5 +71,31 @@ declare interface window{
 自 定 义：用户自己定义匹配规则，return true 表示匹配成功， return false 表示匹配失败
 ```
 操作说明：
-ctr+s 保存代码
-![注入代码](https://img-blog.csdnimg.cn/67c882a55773494a98d4e6dd6987ce9d.png)
+1. `新建`  新建一个脚本
+2. `保存`  快捷键(`ctr+s`)将代码保存到chrome扩展的缓存中`注： 如果删除插件则保存的代码也会被删掉， 所以最好下载到本地`
+3. `删除`	删除已保存的代码
+4. `下载`	将保存的代码保存到本地
+5. `导入`	将本地的代码导入到chrome扩展中
+
+
+## 修改记录查看
+![修改记录查看](https://img-blog.csdnimg.cn/6c1f35d0289c49e2af038d64531e8e2d.png)
+
+方便记录在属性面板修改的内容
+1. 点击`记录修改`按钮开始记录要修改的内容,再次点击停止记录。
+2. 在属性界面修改属性， 如果清除记录列表中某个节点的属性可以在`左侧节点`上`右键`选择`取消修改记录`。
+3. 点击`查看修改`可以查看修改的内容。
+4. 点击`清除记录`， 将之前的修改记录全部清除掉。
+5. 如果要自定义记录格式，可以实现下面的方法
+```javascript
+export interface IUserCostomEngine {
+	....
+	/**
+	 * 获取单条修改对应的内容
+	 * @param findNode  节点obj对象
+	 * @param propPath 属性路径 如 x   parent.x
+	 * @param newValue 修改后的新值
+	 */
+	getRecoderStr?(findNode:any, propPath:string, newValue:any):string
+}
+```

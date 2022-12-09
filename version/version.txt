@@ -1,4 +1,13 @@
 ##版本日志
 
+### v1.0.2(GameInspect_Alpha_v1.0.2.rar)
+1. 增加代码注入功能
+2. 新增记录修改功能
+3. 优化链接断开问题
+4. 增加属性右键复制及跳转功能
+5. 自定义接口 printNodePath 修改为 getNodePath  方便复用
+
+
+
 ### v1.0.1(GameInspect_Alpha_v1.0.1.rar)
 1.初始化项目

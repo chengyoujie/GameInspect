@@ -30,7 +30,15 @@ export interface IUserCostomEngine {
      * 输出节点的路径
      * @param obj 
      */
-    printNodePath?(obj:any):void;
+    getNodePath?(obj:any):string;
+
+    /**
+     * 获取单条修改对应的内容
+     * @param findNode  节点obj对象
+     * @param propPath 属性路径 如 x   parent.x
+     * @param newValue 修改后的新值
+     */
+    getRecoderStr?(findNode:any, propPath:string, newValue:any):string
 
 }
 
