@@ -1,16 +1,20 @@
-# Chrome 扩展   H5 游戏结构检查器  GameInspect  支持 Laya, egret, cocosCreate, cocos2d-js, PIXI
+
+# Chrome 扩展   H5 游戏结构检查器  GameInspect  支持 Laya, egret, cocosCreate, cocos2d-js
 
 ## 1. 说明
 
-仿照 `egret Inspect ` 制作的通用H5游戏列表查看器， 方便查看游戏结构， 修改属性，
+仿照 `egret Inspect ` 制作的通用H5游戏列表查看器， 方便查看游戏结构， 修改属性，注入代码，查看shader,抓帧
+[GitHub](https://github.com/chengyoujie/GameInspect)
+![总览](https://img-blog.csdnimg.cn/c50ae0b6cb1d427db6eedf1ec3fb2a4c.png)
 
-![预览](https://img-blog.csdnimg.cn/9d2663f7116f492d8015b80b3ed11842.png)
+
+
 
 ## 2.安装
+`部分浏览器安装失败，可能是因为浏览器版本太低，升级浏览器版本`
+2.1 下载到本地 `git clone https://github.com/chengyoujie/GameInspect.git`  或 [https://github.com/chengyoujie/GameInspect/releases/download/release/GameInspect_Alpha_v1.0.2.rar](https://github.com/chengyoujie/GameInspect/releases/download/release/GameInspect_Alpha_v1.0.2.rar)
 
-2.1 下载到本地 `git clone https://github.com/chengyoujie/GameInspect.git` 或者直接下载  [https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.2.rar](https://chengyoujie.github.io/GameInspect/version/GameInspect_Alpha_v1.0.2.rar) 
-
-2.2 chrome浏览器内打开链接  [chrome://extensions/](chrome://extensions/) 
+2.2 打开 [chrome://extensions/](chrome://extensions/) 
 
 2.3 打开**右上角**的**开发者模式**开关
 
@@ -21,8 +25,8 @@
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/d732650e2c4f4564a4c8cd4138bca198.png)
 
 选择`dist`目录
+![在这里插入图片描述](https://img-blog.csdnimg.cn/34129de5d0324bafb1621b05c6b3e5bf.png)
 
-![选择文件夹](https://img-blog.csdnimg.cn/34129de5d0324bafb1621b05c6b3e5bf.png)
 
 点击选择文件夹即可， 安装成功后如下图：
 
@@ -44,7 +48,7 @@
 
 ## 4. 自定义扩展
 
-本插件现已支持常用的 `Egret`, `Laya`, `CocosCreate`, `Cocos2dx-js`, `PIXI`   其中 `CocosCreate`, `Cocos2dx-js`, `PIXI` 支持不太全。也可以将其他引擎的实现或现有引擎的优化发送到`1137815160@qq.com`邮箱或者提交到`Github`中
+本插件现已支持常用的 `Egret`, `Laya`, `CocosCreate`, `Cocos2dx-js`,`Pixi`   其中 `Cocos2dx-js`, `Pixi`支持不太全。也可以将其他引擎的实现或现有引擎的优化发送到`1137815160@qq.com`邮箱或者提交到`Github`中
 
 如不能满足需求或者使用其他引擎，可以在游戏中实现 （具体参考 `src/inspector/IUserCostomEngine.ts` 和 `src/inspector/IEngineInfo.ts`）
 
@@ -58,7 +62,9 @@ declare interface window{
 ```
 
 ## 5.注入代码
-![注入代码](https://img-blog.csdnimg.cn/b35c39991dda4e2faa03fe03fa0ea0db.png)
+![注入代码](https://img-blog.csdnimg.cn/f457438f53fe4739b210061dbb1e20b1.png)
+
+
 
 可以把自己的代码注入到指定网站
 用户可以将自己的代码注入到指定的网站
@@ -78,7 +84,7 @@ declare interface window{
 5. `导入`	将本地的代码导入到chrome扩展中
 
 
-## 修改记录查看
+## 6. 修改记录查看
 ![修改记录查看](https://img-blog.csdnimg.cn/6c1f35d0289c49e2af038d64531e8e2d.png)
 
 方便记录在属性面板修改的内容
@@ -99,3 +105,22 @@ export interface IUserCostomEngine {
 	getRecoderStr?(findNode:any, propPath:string, newValue:any):string
 }
 ```
+## 7. 游戏控制(暂停，抓帧，查看修改Shader, 性能数据）
+入口： 顶部右上角![游戏控制入口](https://img-blog.csdnimg.cn/becdf5c236db4e9faf4d1607e12e1d0e.png)
+![GameControl界面](https://img-blog.csdnimg.cn/16b02554413c4883a4dcc946f391e8e5.png)
+![性能数据](https://img-blog.csdnimg.cn/a90f3a8c85344b65aecc7876c532dc92.png)
+游戏控制器
+`【显示基准线】`：鼠标移动时 是否显示FPS, DrawCall, FrameLine鼠标所在x轴上的信息
+`【显示帧抓取视图】`： 方便查看某一帧的渲染顺序 及 渲染时的顶点着色器和片元着色器代码
+`【上一帧】`：跳转到当前帧的前一帧
+`【下一帧】`：跳转到当前帧的前一帧
+`【重新抓取】`：重新抓取当前帧的渲染顺序
+`【显示大图】`：在游戏内显示高清的渲染图
+`【暂停】`： 暂停游戏
+`【下一帧】`： 暂停游戏，并播放下一帧
+`【显示Shader】`： 显示/隐藏 当前页面的所有shader， 如果显示不全或者没有找到可以尝试点击【刷新游戏】按钮
+`【执行Shader】`： 将当前编辑器内的shader编译后在游戏内运行
+`【刷新游戏】`： 重新刷新游戏， 并优先注入重载的方法
+`FPS`： 每秒多少帧
+`DrawCall`： 每秒向GPU提交多少次绘制
+`FrameTime`： 每帧执行的时间
