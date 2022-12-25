@@ -1,4 +1,14 @@
-##版本日志
+﻿##版本日志
+
+
+### v1.0.3(GameInspect_Alpha_v1.0.3.rar)
+Hi Boys 新增了些好玩的东西~!
+1. 新增游戏控制，暂停，播放
+2. 新增抓帧，方便查看每帧的绘制情况
+3. 新增Shader的显示及修改功能
+4. 新增FPS，FrameTime, DrawCall的显示
+5. 修改 注入代码的匹配规则格式，去掉了自执行部分，注入到head中，防止部分网站不支持eval方法
+
 
 ### v1.0.2(GameInspect_Alpha_v1.0.2.rar)
 1. 增加代码注入功能
