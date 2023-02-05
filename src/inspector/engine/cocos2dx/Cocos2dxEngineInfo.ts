@@ -16,7 +16,7 @@ export class Cocos2dxEngineInfo implements IEngineInfo<cc.BaseNode>{
     init(): void {
         let s = this;
         s.version = window["CocosEngine"];
-        s.baseCls = cc["BaseNode"] || cc["_BaseNode"] || cc["Node"];//
+        s.baseCls = cc["BaseNode"] || cc["_BaseNode"] || cc["Node"] as any;//
         s._mask = new Cocos2dxStageMask(s);
     }
 
@@ -48,6 +48,12 @@ export class Cocos2dxEngineInfo implements IEngineInfo<cc.BaseNode>{
     clearMask(): void {
         if(this._mask)this._mask.clear();
     }
+    
+    refushMask(): void {
+        let s = this;
+        if(s._mask)s._mask.refush();
+    }
+
     // getPropNames(obj: cc.BaseNode): string[] {
     //    return [];
     // }

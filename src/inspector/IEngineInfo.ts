@@ -1,3 +1,5 @@
+import { PropNode } from "../common/TreeNode";
+
 export interface IEngineInfo<T>{
     /**
      * 引擎名字 多个引擎的时候不能重复
@@ -49,17 +51,17 @@ export interface IEngineInfo<T>{
      * @param obj 
      */
     drawMask(obj:T):void;
+
+    /**
+     * 刷新舞台上绘制的对象
+     */
+    refushMask?():void;
     
     /**
      * 清理在舞台上绘制的对象位置
      */
     clearMask():void;
 
-    /**
-     * 根据obj 返回要返回什么属性
-     * @param obj 
-     */
-    getPropNames?(obj:T):string[]
 
     /**
      * 根据 obj 返回要过滤掉什么属性不显示
@@ -73,6 +75,12 @@ export interface IEngineInfo<T>{
      * @param obj 
      */
     getClassName?(obj:T):string;
+
+    /**
+     * 添加自定义的属性节点， 一般不需要实现
+     * @param obj 
+     */
+    getAddPropNode?(obj:T):PropNode[];
 
     /**
      * 根据obj 返回对应TreeNode 对象， 一般无需实现
@@ -127,4 +135,5 @@ export interface IEngineInfo<T>{
      * @param value 
      */
     showFPS(value:boolean):void;
+
 }

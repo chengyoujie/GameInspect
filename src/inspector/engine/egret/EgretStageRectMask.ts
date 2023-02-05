@@ -27,9 +27,16 @@ export class EgretStageRectMask  {
             if(s._mask.parent)s._mask.parent.removeChild(s._mask)
             return;
         }
+        egret.sys.$TempStage.addChild(s._mask);
+        s.refush();
+    }
+
+    public refush(){
+        let s = this;
+        let obj = s._bindObj;
+        if(!obj)return;
         let scaleX = 1;
         let scaleY = 1;
-        egret.sys.$TempStage.addChild(s._mask);
         if(obj != egret.sys.$TempStage){
             scaleX = obj.scaleX;
             scaleY = obj.scaleY;
@@ -37,10 +44,19 @@ export class EgretStageRectMask  {
         s._tempPoint.x = 0;
         s._tempPoint.y = 0;
         obj.localToGlobal(0, 0, s._tempPoint)
-        s._rect.x = s._tempPoint.x;
-        s._rect.y = s._tempPoint.y;
-        s._rect.width = Math.max(20, obj.width)*scaleX;
-        s._rect.height = Math.max(20, obj.height)*scaleY;
+        let x = s._tempPoint.x;
+        let y = s._tempPoint.y;
+        let width = Math.max(20, obj.width)*scaleX;
+        let height = Math.max(20, obj.height)*scaleY;
+        
+        if(s._rect.x == x && s._rect.y == y && s._rect.width == width && s._rect.height == height){
+            return;
+        }
+        s._rect.x = x;
+        s._rect.y = y;
+        s._rect.width = width;
+        s._rect.height = height;
+
         s._mask.graphics.clear();
         s._mask.graphics.lineStyle(1, 0x00C800, 0.9)
         s._mask.graphics.beginFill(0x00C800, 0.2);

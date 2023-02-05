@@ -1,5 +1,5 @@
 import { PropNode, TreeNode } from "../common/TreeNode";
-import { CocosEngineInfo } from "./engine/cocos/CocosEngineInfo";
+import { CocosCreatorEngineInfo } from "./engine/cocoscreator/CocosCreatorEngineInfo";
 import { Cocos2dxEngineInfo } from "./engine/cocos2dx/Cocos2dxEngineInfo";
 import { EgretEngineInfo } from "./engine/egret/EgretEnginInfo";
 import { IEngineInfo } from "./IEngineInfo";
@@ -13,7 +13,7 @@ export class EngineManager{
 
     public static init(){
         let s = this;
-        let defaultEngines = [LayaEngineInfo,EgretEngineInfo,  CocosEngineInfo, Cocos2dxEngineInfo, PIXIEngineInfo];
+        let defaultEngines = [LayaEngineInfo,EgretEngineInfo,  CocosCreatorEngineInfo, Cocos2dxEngineInfo, PIXIEngineInfo];
         for(let i=0; i<defaultEngines.length; i++){
             let engine = new defaultEngines[i]();
             if(!s._engineDic[engine.name]){//已经注册过的不在注册
@@ -24,16 +24,6 @@ export class EngineManager{
 
     public static register(engine:IEngineInfo<any>){
         let s = this;
-        // if(!engine.getTreeNode){//如果没有设置 获取 treeNode 则使用默认的
-        //     engine.getTreeNode = (obj:any)=>{
-        //         return EngineManager.getTreeNode(engine, obj);
-        //     }
-        // }
-        // if(!engine.getProps){//如果没有设置 获取 propNode 则使用默认的
-        //     engine.getProps = (obj: Laya.Sprite, showPrivate?: boolean, showFunction?: boolean): {[name:string]:PropNode} => {
-        //         return EngineManager.getPropNodes(engine, obj, showPrivate, showFunction);
-        //     }
-        // }
         if(!engine.getClassName){//如果没有设置 获取 propNode 则使用默认的
             engine.getClassName = (obj: Laya.Sprite): string => {
                 return Utils.getClassName(obj);
@@ -69,13 +59,14 @@ export class EngineManager{
         let s = this;
         let props:{[name:string]:PropNode}= {};
         props = {};
-        let addProps = engineInfo.getPropNames && engineInfo.getPropNames(obj);
+        let addProps = engineInfo.getAddPropNode && engineInfo.getAddPropNode(obj);
         let filterProps = engineInfo.getNotShowPropNames && engineInfo.getNotShowPropNames(obj);
         let temp = obj;
         while(temp){
             let keys = Reflect.ownKeys(temp)
             for(let key in keys){
                 let propName = keys[key];
+                if(propName == "devUUID")continue;
                 if(typeof propName !=  "string")continue;
                 if(filterProps && filterProps.indexOf(propName) != -1)continue;
                 let propNode:PropNode = s.getOnePropNode(obj, temp, propName);
@@ -87,10 +78,11 @@ export class EngineManager{
         }
         if(addProps && addProps.length>0){
             for(let i=0; i<addProps.length; i++){
-                if(props[addProps[i]])continue;
-                let propNode:PropNode = s.getOnePropNode(obj, temp, addProps[i]);
-                if(!showPrivate && propNode.isPrivate)continue;
-                if(!showFunction && propNode.type == "function")continue;
+                let propNode = addProps[i];
+                // if(props[addProps[i]])continue;
+                // let propNode:PropNode = s.getOnePropNode(obj, temp, addProps[i].name);
+                // if(!showPrivate && propNode.isPrivate)continue;
+                // if(!showFunction && propNode.type == "function")continue;
                 props[propNode.name] = propNode;
             }
         }

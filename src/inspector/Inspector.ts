@@ -7,6 +7,9 @@ import {Utils} from "../common/Utils";
 import { IUserCostomEngine } from "./IUserCostomEngine";
 import { ConstVars } from "../common/ConstVars";
 import { CodeData, CodeRunRules, ContentURLS } from "../common/UserCodeInfo";
+import { Spector } from "./spector/Spector";
+import { WebGLUtils } from "../common/WebGLUtils";
+import { ReloadInspect } from "../reload/ReloadInspect";
 
 /**
  * 注入到网页的代码
@@ -30,6 +33,8 @@ export class Inspector {
     private _devPanelHasOpen:boolean=false;
     private _heartBeatId:any = 0;
     private _engineRunUserCode:{[name:string]:CodeData};
+    private _spector:Spector;
+
 
     constructor() {
         this.init();
@@ -39,7 +44,12 @@ export class Inspector {
     private init() {
         let s = this;
         s.msg = Message.getMessage(MessageFromType.Stage, s.handleRecvMessage, s);
+        s._spector = new Spector(s.msg);//需要提前执行， 重写 time和 draw相关的方法
         EngineManager.init();
+        
+        if(window.hasOwnProperty(ConstVars.WINDOW_RELOAD_TAG) && window[ConstVars.WINDOW_RELOAD_TAG]){
+            s.msg.post(MessageType.GameControlReloadComplete)
+        }
         let t = setInterval(() => {
             s.checkCostomEngine();//检测用户是否自定义引擎了
             s._engine = EngineManager.check();
@@ -60,11 +70,19 @@ export class Inspector {
                 },
             });
             let onClickFun = (target: any) => {
-                if(!target)return;
+                if(!target)
+                {
+                    s._engine.clearMask();
+                    return;
+                }
                 s.showClickObj(target, s._treeSetting.hightLightClick)
             }
             let onMouseMoveFun = (target: any) => {
-                if(!target)return;
+                if(!target)
+                {
+                    s._engine.clearMask();
+                    return;
+                }
                 if (s._treeSetting.hightlightHover) {
                     if (s._lastMoveObj == target) return;
                     s._lastMoveObj = target;
@@ -167,12 +185,16 @@ export class Inspector {
 
     private handleRecvMessage(data: MessageDataType<any> ) {
         let s = this;
+        let recvData = data.data;
         if(data.type == MessageType.ContentHeartBeatResponse){
             s._heartBeatCount --;
             return;
         }
         if(data.type == MessageType.DevPanelStateChange){
-            s._devPanelHasOpen = data.data.isShow;
+            s._devPanelHasOpen = recvData.isShow;
+            if(s._devPanelHasOpen){
+                Utils.addSrcScript(ConstVars.TongJiURL, "baiduhmjs", null, false)
+            }
             s.runHeartBeat(s._devPanelHasOpen);
             return;
         }
@@ -181,23 +203,45 @@ export class Inspector {
             return;
         }
         if(data.type == MessageType.InitUserCode){
-            s.checkRunUserCode(data.data)
+            s.checkRunUserCode(recvData)
             return;
         }
         if(data.type == MessageType.RunUserCodeReq){
-            let code:CodeData = data.data;
+            let code:CodeData = recvData;
             if(code.type == CodeRunRules.Once){
-                s.addScript(code.code, code.name)
+                Utils.addScript(code.code, code.name)
                 Utils.log("执行成功 url: "+location.href)
             }else{
                 s.checkRunUserCode({[code.name]:code}, true)
             }
             return;
         }
+
+        if(data.type == MessageType.DevHeartBeatReq){
+            s.msg.post(MessageType.DevHeartBeatResponse, {fps:s._spector.fps, drawCall:s._spector.drawCall, frameTime:s._spector.frameTime})
+        }else if(data.type == MessageType.GameControlPlayReq){
+            s._spector.setPlay(recvData)
+        }else if(data.type == MessageType.GameControlPlayNextFrameReq){
+            s._spector.showNextFrame()
+        }else if(data.type == MessageType.GameControlDrawDetialReq){
+            s._spector.showDrawDeital()
+        }else if(data.type == MessageType.GameControlDrawDetialShowBigReq){
+            s._spector.setIsShowBigImage(recvData)
+        }else if(data.type == MessageType.GameControlJumpDrawDetialIndexReq){
+            s._spector.setBigImageIndex(recvData);
+        }else if(data.type == MessageType.GameControlSaveWebglCodeReq){
+            s._spector.saveWebglCode(recvData);
+        }else if(data.type == MessageType.GameControlGetShaderCodeReq){
+            let codes = WebGLUtils.getAllProgramCode();
+            s.msg.post(MessageType.GameControlGetShaderCodeResponse, codes)
+        }else if(data.type == MessageType.GameControlSelectShaderReq){
+            s._spector.setSelectProgramId(recvData)
+        }
+
         if (!s._engine) return;
         //引擎初始化之后执行的方法
         if (data.type == MessageType.ExpandTreeReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
                 let nodeChildren = [];
                 let children = s._engine.getChildren(findNode);
@@ -214,10 +258,10 @@ export class Inspector {
         } else if (data.type == MessageType.InitStageDataReq) {
             s.handleInitStage();
         } else if (data.type == MessageType.PropChangeReq) {
-            let changeValue = data.data.data;
-            let findNode = s._uid2Obj[data.data.uid];
-            let propPath = data.data.propPath;
-            let isRecodChange = data.data.isRecodChange;
+            let changeValue = recvData.data;
+            let findNode = s._uid2Obj[recvData.uid];
+            let propPath = recvData.propPath;
+            let isRecodChange = recvData.isRecodChange;
             if (s._engine.canUse(findNode)) {
                 let obj = findNode;
                 let newValue: any;
@@ -233,6 +277,7 @@ export class Inspector {
                                 data: Utils.stringifyValue(newValue),
                                 recodChangeStr:isRecodChange?s.getRecoderStr(findNode, propPath, newValue):null,
                             })
+                            if(s._engine.refushMask)s._engine.refushMask();
                         } else {
                             obj = obj[propPaths[i]];
                             if (!obj) return;
@@ -241,13 +286,13 @@ export class Inspector {
                 }
             }
         } else if (data.type == MessageType.ShowRectInStageReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
                 s._engine.drawMask(findNode)
                 s.msg.post(MessageType.SelectNode, findNode.devUUID);
             }
         } else if (data.type == MessageType.PropDataReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
                 s.msg.post(MessageType.PropDataResponse, {
                     uid: findNode.devUUID,
@@ -255,7 +300,6 @@ export class Inspector {
                 })
             }
         } else if (data.type == MessageType.TreeSettingInfoResponse) {
-            let recvData:DevSettingInfo = data.data;
             for (let key in recvData) {
                 s._treeSetting[key] = recvData[key];
             }
@@ -267,7 +311,6 @@ export class Inspector {
             }
             s._engine.setMouseEnable(!recvData.preEventTouch);
         } else if (data.type == MessageType.ExpandPropReq) {
-            let recvData = data.data;
             let findNode = s._uid2Obj[recvData.uid];
             if (s._engine.canUse(findNode)) {
                 let propPath = recvData.prop.split(".");
@@ -283,7 +326,6 @@ export class Inspector {
                 })
             }
         } else if (data.type == MessageType.VisibleChangeReq) {
-            let recvData = data.data;
             let findNode = s._uid2Obj[recvData.uid];
             if (s._engine.canUse(findNode)) {
                 s._engine.setVisible(findNode, recvData.data)
@@ -297,25 +339,25 @@ export class Inspector {
                 s.msg.post(MessageType.GameInfoResponse, s._gameInfo)
             }
         } else if (data.type == MessageType.ShowTreeNodeInConsoleReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
                 if(s._customEngine && s._customEngine.printVar){
                     s._customEngine.printVar(findNode);
                 }else{
-                    let nodeVarName = "gameInspectNode" + data.data
+                    let nodeVarName = "gameInspectNode" + recvData
                     Utils.log("临时变量名", nodeVarName);
                     console.log(findNode)
                     window[nodeVarName] = findNode;
                 }
             } else {
                 if(ConstVars.DEBUG){
-                    console.log("没有找到节点： " + data.data)
+                    console.log("没有找到节点： " + recvData)
                 }
             }
         } else if (data.type == MessageType.InspectClassDefinedReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
-                let clsFunName = "gameInspectClassFun" + data.data;
+                let clsFunName = "gameInspectClassFun" + recvData;
                 let fun = findNode.constructor;
                 if(s._customEngine && s._customEngine.getClassFun){
                     fun = s._customEngine.getClassFun(findNode);
@@ -326,13 +368,13 @@ export class Inspector {
                 }
             } else {
                 if(ConstVars.DEBUG){
-                    console.log("没有找到节点： " + data.data)
+                    console.log("没有找到节点： " + recvData)
                 }
             }
         } else if (data.type == MessageType.InspectVarDefinedReq) {
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
-                let clsFunName = "gameInspectVarFun" + data.data;
+                let clsFunName = "gameInspectVarFun" + recvData;
                 let fun = s.getVarLocationFun(findNode)
                 if(fun){
                     window[clsFunName] = fun;
@@ -343,16 +385,15 @@ export class Inspector {
                 }
             } else {
                 if(ConstVars.DEBUG){
-                    console.log("没有找到节点： " + data.data)
+                    console.log("没有找到节点： " + recvData)
                 }
             }
         } else if(data.type == MessageType.ShowTreeNodePathReq){
-            let findNode = s._uid2Obj[data.data];
+            let findNode = s._uid2Obj[recvData];
             if (s._engine.canUse(findNode)) {
                 s.printNodePath(findNode)
             }
         }else if(data.type == MessageType.ShowPropFunDefineReq){
-            let recvData = data.data;
             let propFunName = "gameInspectPropFun_" + recvData.uid+"_"+recvData.propPath.replace(/\./gi, "_");
             let findNode = s._uid2Obj[recvData.uid];
             if (s._engine.canUse(findNode)) {
@@ -374,8 +415,6 @@ export class Inspector {
                     alert("没有找到属性的方法定义")
                 }
             }
-        }else if(data.type == MessageType.DevHeartBeatReq){
-            s.msg.post(MessageType.DevHeartBeatResponse)
         }
         if(ConstVars.DEBUG){
             console.log(" Inspection  接受到消息： ", data)
@@ -386,6 +425,8 @@ export class Inspector {
     private checkRunUserCode(scripts:{[name:string]:CodeData}, showMsg?:boolean){
         let s = this;
         let url:ContentURLS = {url:window.location.href, frameId:window.location==top.location?0:1, engine:s._engine?s._engine.name:""}
+
+
         for(let key in scripts){
             let code = scripts[key];
             let matchCode = code.match;
@@ -396,9 +437,11 @@ export class Inspector {
                     if(!s._engineRunUserCode)s._engineRunUserCode = {};
                     s._engineRunUserCode[code.name] = code;
                     if(showMsg)Utils.error("执行失败，引擎未初始化 url: "+location.href)
-                }else if(eval(Utils.evalUserRuleCode(matchCode, url)))
+                }else if(Utils.evalUserRuleCode(matchCode, url, code.name))
                 {
-                    s.addScript(code.code, code.name)
+                    if(window.location.href == window.top.location.href){
+                        Utils.addScript(code.code, code.name)
+                    }
                     if(showMsg)Utils.log("执行成功 url: "+location.href)
                 }else{
                     if(showMsg)Utils.error("当前网站不匹配  url: "+location.href)
@@ -415,27 +458,13 @@ export class Inspector {
         let urls:ContentURLS = {url:window.location.href, frameId:window.location==top.location?0:1, engine:name}
         for(let key in s._engineRunUserCode){
             let code = s._engineRunUserCode[key];
-            if(code.match && eval(Utils.evalUserRuleCode(code.match, urls))){
-                s.addScript(code.code, code.name)
+            if(code.match && Utils.evalUserRuleCode(code.match, urls, code.name) ){
+                Utils.addScript(code.code, code.name)
             }
         }
     }
 
     
-    /**
-     * 添加script 代码
-     * @param code 
-     */
-     public addScript(code:string, name:string){
-        let tag = document.getElementById(name);
-        if(tag){
-            document.head.removeChild(tag);
-        }
-        var script = document.createElement("script")
-        script.innerHTML = code;
-        script.id = name;
-        document.head.appendChild(script)
-    }
 
 
     private getRecoderStr(findNode:any, propPath:string, newValue:any):string{
@@ -558,4 +587,5 @@ export class Inspector {
 
 }
 
+ReloadInspect
 new Inspector();

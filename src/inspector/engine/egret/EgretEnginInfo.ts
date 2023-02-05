@@ -55,6 +55,11 @@ export class EgretEngineInfo implements IEngineInfo<egret.DisplayObject> {
         let s = this;
         if(s._mask)s._mask.showRect(obj);
     }
+    refushMask(): void {
+        let s = this;
+        if(s._mask)s._mask.refush();
+    }
+
     clearMask(): void {
         let s = this;
         if(s._mask)s._mask.clear();

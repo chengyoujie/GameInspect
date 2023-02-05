@@ -85,6 +85,11 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
         if(s._mask) s._mask.showRect(obj)
     }
 
+    refushMask(): void {
+        let s = this;
+        if(s._mask)s._mask.refush();
+    }
+
     showFPS(value: boolean): void {
         if(window["Laya"]["Stat"]){
             if(value){

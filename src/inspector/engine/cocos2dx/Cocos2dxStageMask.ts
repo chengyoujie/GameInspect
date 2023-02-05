@@ -33,6 +33,24 @@ export class Cocos2dxStageMask {
         stage.addChild(s._mask);
     }
 
+    public refush(){
+        let s = this;
+        //todo refush
+        // s._bindObj = obj;
+        // let w:number = Math.max(obj.width, 20);
+        // let h:number = Math.max(obj.height, 20);
+        // let pos:{x:number, y:number} = obj.convertToWorldSpace();
+        // let stage = s._engine.stage;
+        // w = w*obj.scaleX;
+        // h = h*obj.scaleY;
+        // if(s._mask){
+        //     s._mask.clear();
+        //     s._mask.removeFromParent();
+        // }
+        // s._mask.drawRect(cc["p"](pos.x-w*obj.anchorX, pos.y-h*obj.anchorY), cc["p"](w, h), new cc["Color"](0, 200, 0, 55), 1, new cc["Color"](0, 200, 0, 235));
+        
+    }
+
     private handleActiviteChange(e:cc.BaseNode){
         let s = this;
         if(!s._bindObj)return;
@@ -46,8 +64,10 @@ export class Cocos2dxStageMask {
         if(s._bindObj){
             s._bindObj =null;
         }
-        let graphics = s._mask.getComponent(cc.Graphics);
-        graphics.clear();
+        if(s._mask && s._mask["getComponent"]){
+            let graphics = s._mask.getComponent(cc.Graphics);
+            graphics.clear();
+        }
         if(s._mask)s._mask.removeFromParent();
     }
 

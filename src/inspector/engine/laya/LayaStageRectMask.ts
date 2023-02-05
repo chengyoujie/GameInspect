@@ -34,16 +34,39 @@ export class LayaStageRectMask  {
             return;
         }
         Laya.stage.addChild(s._mask);
+        s.refush();
+        Laya.timer.loop(1000, s, s.refush)
+        // s._tempPoint.x = 0;
+        // s._tempPoint.y = 0;
+        // obj.localToGlobal(s._tempPoint)
+        // s._rect.x = s._tempPoint.x;
+        // s._rect.y = s._tempPoint.y;
+        // s._rect.width = Math.max(20, obj.width)*obj.scaleX;
+        // s._rect.height = Math.max(20, obj.height)*obj.scaleY;
+        // s._mask.graphics.clear();
+        // s._mask.graphics.drawRect(s._rect.x, s._rect.y, s._rect.width, s._rect.height, "#00C80022", "#00C800ee", 1);
+        
+    }
+
+    public refush(){
+        let s = this;
+        if(!s._bindObj)return;
         s._tempPoint.x = 0;
         s._tempPoint.y = 0;
-        obj.localToGlobal(s._tempPoint)
-        s._rect.x = s._tempPoint.x;
-        s._rect.y = s._tempPoint.y;
-        s._rect.width = Math.max(20, obj.width)*obj.scaleX;
-        s._rect.height = Math.max(20, obj.height)*obj.scaleY;
+        s._bindObj.localToGlobal(s._tempPoint)
+        let x = s._tempPoint.x;
+        let y = s._tempPoint.y;
+        let width = Math.max(20, s._bindObj.width)*s._bindObj.scaleX;
+        let height = Math.max(20, s._bindObj.height)*s._bindObj.scaleY;
+        if(s._rect.x == x && s._rect.y == y && s._rect.width == width && s._rect.height == height){
+            return;
+        }
+        s._rect.x = x;
+        s._rect.y = y;
+        s._rect.width = width;
+        s._rect.height = height;
         s._mask.graphics.clear();
         s._mask.graphics.drawRect(s._rect.x, s._rect.y, s._rect.width, s._rect.height, "#00C80022", "#00C800ee", 1);
-        
     }
 
 
@@ -53,6 +76,13 @@ export class LayaStageRectMask  {
         if(s._bindObj){
             // s._bindObj.offAllCaller(s);
             s._bindObj.off(Laya.Event.UNDISPLAY, s, s.clear)
+        }
+        Laya.timer.clearAll(s)
+        if(s._rect){
+            s._rect.x = 0;
+            s._rect.y = 0;
+            s._rect.width = 0;
+            s._rect.height = 0;
         }
         s._bindObj = null;
         s._mask.removeSelf();

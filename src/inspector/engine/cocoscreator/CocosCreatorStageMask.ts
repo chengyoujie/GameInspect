@@ -24,6 +24,13 @@ export class CocosCreatorStageMask {
         s._mask.addComponent(s._drawAdapter.getGraphicsComponentCls());
     }
 
+    private resetMask(){
+        let s = this;
+        s._mask = new cc.Node();
+        s._mask.name = ConstVars.StageMaskName;
+        s._mask.addComponent(s._drawAdapter.getGraphicsComponentCls());
+    }
+
     
     public showRect(obj:cc.BaseNode){
         let s = this;
@@ -35,12 +42,16 @@ export class CocosCreatorStageMask {
         if(s._bindObj){
             s._bindObj.on('active-in-hierarchy-changed', s.handleActiviteChange, s)
         }
-        if(s._mask.parent){
-            s._mask.parent.removeChild(s._mask)
-        }
+        // if(s._mask.parent){
+        //     s._mask.parent.removeChild(s._mask)
+        // }
         // s._mask.removeFromParent();
         let stage = s._drawAdapter.getMaskParent();
-        stage.addChild(s._mask);
+        try{
+            stage.addChild(s._mask);
+        }catch(e){
+            s._mask.parent = stage as any;
+        }
         s.refush();
     }
 
@@ -49,6 +60,9 @@ export class CocosCreatorStageMask {
         let s = this;
         let obj = s._bindObj;
         let drawCls = s._drawAdapter.getGraphicsComponentCls();
+        if(!s._mask["_components"]){
+            s.resetMask();
+        }
         let graphics = s._mask.getComponent(drawCls) as cc.Graphics;
         if(!obj)
         {
@@ -84,8 +98,10 @@ export class CocosCreatorStageMask {
             s._bindObj.off('active-in-hierarchy-changed', s.handleActiviteChange, s)
             s._bindObj = null;
         }
-        let graphics = s._mask.getComponent(s._drawAdapter.getGraphicsComponentCls()) as cc.Graphics;
-        graphics.clear();
+        if(s._mask["_components"]){
+            let graphics = s._mask.getComponent(s._drawAdapter.getGraphicsComponentCls()) as cc.Graphics;
+            graphics.clear();
+        }
         s._mask.removeFromParent();
     }
 
