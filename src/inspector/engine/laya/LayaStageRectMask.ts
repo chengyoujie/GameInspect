@@ -7,7 +7,7 @@ export class LayaStageRectMask  {
     private _rect:Laya.Rectangle;
     private _tempPoint:Laya.Point;
     private _mask:Laya.Sprite;
-    private _bindObj:Laya.Sprite;
+    private _bindObj:Laya.Node;
 
     constructor(){
         this._mask = new Laya.Sprite();
@@ -21,7 +21,7 @@ export class LayaStageRectMask  {
         }
     }
 
-    public showRect(obj:Laya.Sprite){
+    public showRect(obj:Laya.Node){
         let s = this;
         if(s._bindObj){
             // s._bindObj.offAllCaller(s);// engin: Laya version: 1.7.17 没有此方法
@@ -50,14 +50,14 @@ export class LayaStageRectMask  {
 
     public refush(){
         let s = this;
-        if(!s._bindObj)return;
+        if(!s._bindObj || !s._bindObj["localToGlobal"])return;
         s._tempPoint.x = 0;
         s._tempPoint.y = 0;
-        s._bindObj.localToGlobal(s._tempPoint)
+        s._bindObj["localToGlobal"](s._tempPoint)
         let x = s._tempPoint.x;
         let y = s._tempPoint.y;
-        let width = Math.max(20, s._bindObj.width)*s._bindObj.scaleX;
-        let height = Math.max(20, s._bindObj.height)*s._bindObj.scaleY;
+        let width = Math.max(20, s._bindObj["width"])*s._bindObj["scaleX"];
+        let height = Math.max(20, s._bindObj["height"])*s._bindObj["scaleY"];
         if(s._rect.x == x && s._rect.y == y && s._rect.width == width && s._rect.height == height){
             return;
         }

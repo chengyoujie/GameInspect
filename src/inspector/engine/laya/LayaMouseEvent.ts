@@ -6,16 +6,16 @@ export class LayaMouseEvent{
     public static MOUSE_DOWN:string;// = DevMouseEvent.EventPreName+Laya.Event.MOUSE_DOWN;
 
     private static _point:Laya.Point;
-    private static _target:Laya.Sprite;
+    private static _target:Laya.Node;
     private static _rect: Laya.Rectangle;
     public static enableMouseEvent = true;
 
     private static _mouseMoveTime:number = 500;
     private static _curMouseMoveTime:number = 0;
 
-    private static _engine:IEngineInfo<Laya.Sprite>;
+    private static _engine:IEngineInfo<Laya.Node>;
 
-    public static start(engine:IEngineInfo<Laya.Sprite>){
+    public static start(engine:IEngineInfo<Laya.Node>){
         let s = this;
         s._engine = engine;
         s._point = new Laya.Point();
@@ -85,7 +85,8 @@ export class LayaMouseEvent{
         let children = this._engine.getChildren(sp);
         if (!notCheckChild && children) {
             for (var i: number = children.length - 1; i > -1; i--) {
-                var child: Laya.Sprite = children[i];
+                var child: Laya.Sprite = children[i] as Laya.Sprite;
+                if(!(child instanceof Laya.Sprite))continue;
                 //只有接受交互事件的，才进行处理
                 if (!child.destroyed &&  child.visible) {
                     if (this.check(child, mouseX, mouseY)) 
@@ -96,6 +97,7 @@ export class LayaMouseEvent{
             if(sp["_extUIChild"]){
                 for (i = sp["_extUIChild"].length - 1; i >= 0; i--) {
                     var c: Laya.Sprite = sp["_extUIChild"][i];
+                    if(!(c instanceof Laya.Sprite))continue;
                     if (!c.destroyed &&  c.visible) {
                         if (this.check(c, mouseX, mouseY)) 
                             return true;

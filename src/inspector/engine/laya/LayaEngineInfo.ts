@@ -3,43 +3,43 @@ import { IEngineInfo } from "../../IEngineInfo";
 import { LayaMouseEvent } from "./LayaMouseEvent";
 import { LayaStageRectMask } from "./LayaStageRectMask";
 
-export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
+export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
     
     enableMouseEvent: boolean;
-    stage: Laya.Sprite;
+    stage: Laya.Node;
     name: string = "Laya";
     version: string;
-    baseCls: typeof Laya.Sprite;
+    baseCls: typeof Laya.Node;
     private _mask:LayaStageRectMask;
     private _clssNameArray:{name:string, class:any}[] = [];
 
-    getParent(obj: Laya.Sprite): Laya.Sprite {
-        return obj.parent as Laya.Sprite;
+    getParent(obj: Laya.Node): Laya.Node {
+        return obj.parent as Laya.Node;
     }
-    // getTreeNode(obj: Laya.Sprite): TreeNode {
+    // getTreeNode(obj: Laya.Node): TreeNode {
     //     return EngineManager.getTreeNode(this, obj)
     // }
-    // getProps(obj: Laya.Sprite, showPrivate?: boolean, showFunction?: boolean): {[name:string]:PropNode} {
+    // getProps(obj: Laya.Node, showPrivate?: boolean, showFunction?: boolean): {[name:string]:PropNode} {
     //     return EngineManager.getPropNodes(this, obj, showPrivate, showFunction);
     // }
-    getObjName(obj: Laya.Sprite): string {
+    getObjName(obj: Laya.Node): string {
         return obj.name;
     }
-    getVisible(obj: Laya.Sprite): boolean {
-        return obj.visible && obj.alpha != 0;
+    getVisible(obj: Laya.Node): boolean {
+        return obj["visible"] && obj["alpha"] != 0;
     }
-    setVisible(obj: Laya.Sprite, value: boolean): void {
-        obj.visible = value;
-        if(value && obj.alpha < 0.1)obj.alpha = 1;
+    setVisible(obj: Laya.Node, value: boolean): void {
+        obj["visible"] = value;
+        if(value && obj["alpha"] < 0.1)obj["alpha"] = 1;
     }
     setMouseEnable(value: boolean): void {
         LayaMouseEvent.enableMouseEvent = value;
     }   
 
-    canUse(obj: Laya.Sprite): boolean {
+    canUse(obj: Laya.Node): boolean {
         return obj && !obj.destroyed;
     }
-    // getPropNames(obj: Laya.Sprite): string[] {
+    // getPropNames(obj: Laya.Node): string[] {
     //    return []
     // } 
 
@@ -55,7 +55,7 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
 
     init(){
         let s = this;
-        s.baseCls = Laya.Sprite;
+        s.baseCls = Laya.Node;
         s.stage = Laya.stage;
         s.version = Laya.version;
         s._mask = new LayaStageRectMask();
@@ -66,21 +66,21 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
         }
     }
 
-    start(onClickFun:(target:Laya.Sprite)=>void, onMouseMoveFun:(target:Laya.Sprite)=>void): void {
+    start(onClickFun:(target:Laya.Node)=>void, onMouseMoveFun:(target:Laya.Node)=>void): void {
         let s = this;
         LayaMouseEvent.start(this);
         
-        Laya.stage.on(LayaMouseEvent.MOUSE_DOWN, this, (target:Laya.Sprite)=>{
+        Laya.stage.on(LayaMouseEvent.MOUSE_DOWN, this, (target:Laya.Node)=>{
             onClickFun.call(s, target)
         })
-        Laya.stage.on(LayaMouseEvent.MOUSE_MOVE, this, (target:Laya.Sprite)=>{
+        Laya.stage.on(LayaMouseEvent.MOUSE_MOVE, this, (target:Laya.Node)=>{
             onMouseMoveFun.call(s, target)
         })
     }
-    getChildren(obj: Laya.Sprite): Laya.Sprite[] {
+    getChildren(obj: Laya.Node): Laya.Node[] {
         return obj["_children"] || obj["_childs"] || []
     }
-    drawMask(obj: Laya.Sprite): void {
+    drawMask(obj: Laya.Node): void {
         let s = this;
         if(s._mask) s._mask.showRect(obj)
     }
@@ -101,7 +101,7 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Sprite>{
     }
 
     
-    getClassName(obj: Laya.Sprite): string {
+    getClassName(obj: Laya.Node): string {
         if(typeof obj == "number" || typeof obj == "string")return obj;
         let s = this;
         for(let i=0; i<s._clssNameArray.length; i++){

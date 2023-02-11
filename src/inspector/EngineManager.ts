@@ -25,7 +25,7 @@ export class EngineManager{
     public static register(engine:IEngineInfo<any>){
         let s = this;
         if(!engine.getClassName){//如果没有设置 获取 propNode 则使用默认的
-            engine.getClassName = (obj: Laya.Sprite): string => {
+            engine.getClassName = (obj: any): string => {
                 return Utils.getClassName(obj);
             }
         }
