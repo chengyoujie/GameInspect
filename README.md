@@ -13,7 +13,7 @@
 ## 2.安装
 `部分浏览器安装失败，可能是因为浏览器版本太低，升级浏览器版本`
 
-2.1 下载到本地 `git clone https://github.com/chengyoujie/GameInspect.git`  或 [https://github.com/chengyoujie/GameInspect/releases/download/release/GameInspect_Alpha_v1.0.3.rar](https://github.com/chengyoujie/GameInspect/releases/download/release/GameInspect_Alpha_v1.0.3.rar)
+2.1 下载到本地 `git clone https://github.com/chengyoujie/GameInspect.git`  或 [https://github.com/chengyoujie/GameInspect/releases/download/release/dist.rar](https://github.com/chengyoujie/GameInspect/releases/download/release/dist.rar)
 
 2.2 打开 [chrome://extensions/](chrome://extensions/) 
 
