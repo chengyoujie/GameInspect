@@ -3,6 +3,8 @@ import { ContentURLS } from "./UserCodeInfo";
 
 export class Utils{
     private static _uid:number = 0;
+    /**防止cocos 把console.log 重写了 */
+    public static ConsoleLogFun = console.log;
 
     public static getUID(){
         let s = this;
@@ -54,7 +56,7 @@ export class Utils{
         if(obj["$owner"] && obj["$owner"].constructor) return obj["$owner"].constructor.name;//fgui
         if(obj.__classname__)return obj.__classname__;//Cocos create
         if(obj._className)return obj._className;//Cocos2d-JS
-        if(obj.__className)return obj.__className;//其他
+        if(obj.__className && obj.__className.substring(0, 4).toLocaleLowerCase()!="laya")return obj.__className;//其他
         if(obj.constructor && obj.constructor.name)return obj.constructor.name;//common
         return typeof obj;
     }
@@ -70,10 +72,10 @@ export class Utils{
             let cornerRight = i==args.length-1?3:0;
             logParams.push(`background: ${color}; padding: 4px;font-size: 13px; border-radius: ${cornerLeft}px ${cornerRight}px ${cornerRight}px ${cornerLeft}px; color: #163808`)
         }
-        console.log.apply(console, logParams);
+        this.ConsoleLogFun.apply(console, logParams);
     }
     public static error(msg:string){
-        console.log(`%c${msg}`,'background: #f5a2a2; padding: 4px; width:100%; border-radius: 3px 3px 3px 3px; color: #ff0000;font-size: 13px;');
+        this.ConsoleLogFun.call(console, `%c${msg}`,'background: #f5a2a2; padding: 4px; width:100%; border-radius: 3px 3px 3px 3px; color: #ff0000;font-size: 13px;');
     }
 
     public static transformUserRuleCode(code:string, urls:ContentURLS[]){
@@ -93,8 +95,56 @@ export class Utils{
         // code = code.replace(ConstVars.$EngineName, '"'+engineName+'"').replace(ConstVars.$SITEURL, '"'+sitURL+'"').replace(ConstVars.$GAMEURL, '"'+frameURL+'"')
         return code;
     }
+    /**
+     * 添加script 代码
+     * @param code 
+     */
+     public static addScript(code:string, name:string, override:boolean =true){
+        name = "$gameInspectInsertScript_"+name
+        let tag = document.getElementById(name);
+        if(tag){
+            if(!override)return;
+            document.head.removeChild(tag);
+        }
+        var script = document.createElement("script")
+        script.innerHTML = code;
+        script.id = name;
+        try{
+            document.head.appendChild(script)
+        }catch(e){
+            if(ConstVars.DEBUG){
+                console.log("添加脚本失败 "+name)
+            }
+        }
+    }
 
-    public static evalUserRuleCode(code:string, url:ContentURLS){
+    /**
+     * 添加script 代码
+     * @param code 
+     */
+     public static addSrcScript(src:string, name:string, callBack:(result:boolean)=>void=null, override:boolean =true){
+        name = "$gameInspectInsertSrcScript_"+name
+        let tag = document.getElementById(name);
+        if(tag){
+            if(!override)return;
+            document.head.removeChild(tag);
+        }
+        let s = this;
+        var script = document.createElement("script")
+        script.src = src;
+        script.id = name;
+        script.onload = ()=>{
+            //添加用户的代码
+            if(callBack)callBack(true)
+        }
+        script.onerror = ()=>{
+            if(callBack)callBack(false);
+        }
+        document.head.appendChild(script)
+    }
+
+    public static evalUserRuleCode(code:string, url:ContentURLS, name:string){
+        let s = this;
         let engineName = "";
         let sitURL:string="";
         let frameURL:string="";
@@ -104,7 +154,12 @@ export class Utils{
         }
         if(!url.frameId)sitURL = url.url;
         code = this.replaceAll(code, ConstVars.$VarEngineName, '"'+engineName+'"', ConstVars.$VarSiteURL, '"'+sitURL+'"',ConstVars.$VarGameURL, '"'+frameURL+'"')
-        return code;
+        let funName = `$gameInspectMatchUserCode${name}`
+        Utils.addScript(`function ${funName}(){
+            ${code};
+        }
+        `, "useMatchScprit"+name);
+        return window[funName]?window[funName]():false;
     }
 
     private static replaceAll(str:string, ...args){
@@ -151,6 +206,18 @@ export class Utils{
         document.body.removeChild(textarea);
     }
 
+    public static download(saveStr:string, fileName:string, type:string="text"){
+        const element:any = document.createElementNS("http://www.w3.org/1999/xhtml", "a");
+        let ev = document.createEvent("MouseEvents");
+        let urlObject:any = window.URL || window.webkitURL || window;
+        let export_blob = new Blob([saveStr], {type: type});
+        element.href = urlObject.createObjectURL(export_blob);
+        element.download = fileName;
+        ev.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        element.dispatchEvent(ev);
+        urlObject.revokeObjectURL(element.href);
+        element.href = '';
+    }
 
     /**
      * 获取时间信息

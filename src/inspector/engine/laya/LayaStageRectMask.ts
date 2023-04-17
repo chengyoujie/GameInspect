@@ -1,4 +1,6 @@
 import { ConstVars } from "../../../common/ConstVars";
+import { IEngineInfo } from "../../IEngineInfo";
+import { LayaEngineInfo } from "./LayaEngineInfo";
 
 /**
  * 绘制舞台上区域
@@ -8,13 +10,16 @@ export class LayaStageRectMask  {
     private _tempPoint:Laya.Point;
     private _mask:Laya.Sprite;
     private _bindObj:Laya.Node;
+    private _engineInfo:LayaEngineInfo;
 
-    constructor(){
+    constructor(engineInfo:LayaEngineInfo){
+        this._engineInfo = engineInfo;
         this._mask = new Laya.Sprite();
         this._rect = new Laya.Rectangle();
         this._tempPoint = new Laya.Point();
         this._mask.name = ConstVars.StageMaskName;
-        if(Laya.version.startsWith("1.")){
+        let version = this._engineInfo.version;
+        if(version.startsWith("1.")){
             this._mask.alpha = 0.3;
         }else{
             this._mask.alpha = 1;

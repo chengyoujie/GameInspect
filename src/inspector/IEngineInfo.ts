@@ -99,6 +99,14 @@ export interface IEngineInfo<T>{
     // getProps?(obj:T, showPrivate?:boolean, showFunction?:boolean):{[name:string]:PropNode};
 
     /**
+     * 修改属性节点  一般无需实现
+     * @param obj 
+     * @param propName 
+     * @param prop 
+     */
+    modifyPropNode?(obj:T, propName:string, prop:PropNode):PropNode
+
+    /**
      * 节点是否可用  如obj==null 或者 已经释放掉了 需要返回false
      * @param obj 
      */

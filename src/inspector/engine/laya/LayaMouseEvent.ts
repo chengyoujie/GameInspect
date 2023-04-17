@@ -25,20 +25,37 @@ export class LayaMouseEvent{
         Laya.stage.on(Laya.Event.MOUSE_DOWN, s, s.handleMouseDownEvent)
         Laya.stage.on(Laya.Event.MOUSE_UP, s, s.handleMouseUPEvent)
         Laya.stage.on(Laya.Event.MOUSE_DOWN, s, s.handleMouseEvent)
-        let touchProto = Laya.TouchManager.prototype;
-        let oldSendFun:Function = touchProto["sendEvents"]
-        Object.defineProperties(touchProto, {
-            sendEvents:{
-                value:function(eles: any[], type: string): void {
-                    if(!s.enableMouseEvent && type == Laya.Event.CLICK){
-                        return;
-                    }
-                    oldSendFun.call(this, eles, type)
-                },
-                enumerable:true,
-                
-            }
-        })
+        if(Laya.TouchManager){
+            let touchProto = Laya.TouchManager.prototype;
+            let oldSendFun:Function = touchProto["sendEvents"]
+            Object.defineProperties(touchProto, {
+                sendEvents:{
+                    value:function(eles: any[], type: string): void {
+                        if(!s.enableMouseEvent && type == Laya.Event.CLICK){
+                            return;
+                        }
+                        oldSendFun.call(this, eles, type)
+                    },
+                    enumerable:true,
+                    
+                }
+            })
+        }else if(Laya.InputManager){//3.0 的 鼠标事件
+            let touchProto = Laya.InputManager.prototype;
+            let oldSendFun:Function = touchProto["bubbleEvent"]
+            Object.defineProperties(touchProto, {
+                bubbleEvent:{
+                    value:function(type: string, ev: Event, initiator: Node): void {
+                        if(!s.enableMouseEvent && type == Laya.Event.CLICK){
+                            return;
+                        }
+                        oldSendFun.call(this, type, ev, initiator)
+                    },
+                    enumerable:true,
+                    
+                }
+            })
+        }
     }
 
     private static handleMouseDownEvent(e:Laya.Event){
@@ -61,7 +78,16 @@ export class LayaMouseEvent{
 
     private static handleMouseEvent(e:Laya.Event){
         let s = this;
-        s.check(Laya.stage, Laya.MouseManager.instance.mouseX, Laya.MouseManager.instance.mouseY);
+        let mouseX = 0;
+        let mouseY = 0;
+        if(Laya.MouseManager){//<3.0版本的
+            mouseX = Laya.MouseManager.instance.mouseX;
+            mouseY = Laya.MouseManager.instance.mouseY;
+        }else{//3.0版本
+            mouseX = Laya.InputManager.mouseX;
+            mouseY = Laya.InputManager.mouseY;
+        }
+        s.check(Laya.stage, mouseX, mouseY);
         Laya.stage.event(LayaMouseEvent.EventPreName+e.type, s._target)
     }
     

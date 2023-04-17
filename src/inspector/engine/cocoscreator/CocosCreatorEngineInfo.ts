@@ -84,6 +84,14 @@ export class CocosCreatorEngineInfo implements IEngineInfo<cc.BaseNode>{
         
     }
 
+    modifyPropNode(obj: cc.BaseNode, propName: string, prop: PropNode): PropNode {
+        let propObj = obj[propName];
+        if(propObj instanceof cc.Color){
+            prop.valueExtParam = {r:propObj.r, g:propObj.g, b:propObj.b, a:propObj.a}
+        }
+        return prop;
+    }
+
     getAddPropNode(obj: cc.BaseNode): PropNode[] {
         let result:PropNode[] = [];
         let components = obj["_components"];

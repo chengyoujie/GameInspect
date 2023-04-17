@@ -70,6 +70,9 @@ export class EngineManager{
                 if(typeof propName !=  "string")continue;
                 if(filterProps && filterProps.indexOf(propName) != -1)continue;
                 let propNode:PropNode = s.getOnePropNode(obj, temp, propName);
+                if(engineInfo.modifyPropNode){//修改属性节点
+                    propNode = engineInfo.modifyPropNode(obj,propName, propNode)
+                }
                 if(!showPrivate && propNode.isPrivate)continue;
                 if(!showFunction && propNode.type == "function")continue;
                 props[propNode.name] = propNode;
@@ -79,10 +82,6 @@ export class EngineManager{
         if(addProps && addProps.length>0){
             for(let i=0; i<addProps.length; i++){
                 let propNode = addProps[i];
-                // if(props[addProps[i]])continue;
-                // let propNode:PropNode = s.getOnePropNode(obj, temp, addProps[i].name);
-                // if(!showPrivate && propNode.isPrivate)continue;
-                // if(!showFunction && propNode.type == "function")continue;
                 props[propNode.name] = propNode;
             }
         }

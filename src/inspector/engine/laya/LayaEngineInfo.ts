@@ -1,3 +1,5 @@
+import { ConstVars } from "../../../common/ConstVars";
+import { PropNode } from "../../../common/TreeNode";
 import { Utils } from "../../../common/Utils";
 import { IEngineInfo } from "../../IEngineInfo";
 import { LayaMouseEvent } from "./LayaMouseEvent";
@@ -57,8 +59,8 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         let s = this;
         s.baseCls = Laya.Node;
         s.stage = Laya.stage;
-        s.version = Laya.version;
-        s._mask = new LayaStageRectMask();
+        s.version = Laya.version || Laya.LayaEnv.version;
+        s._mask = new LayaStageRectMask(s);
         
         let obj = window["Laya"];
         for(let key in obj){
@@ -100,13 +102,48 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         }
     }
 
+    getAddPropNode(obj: Laya.Node): PropNode[] {
+        let result:PropNode[] = [];
+        let components = obj["_components"];
+        if(components && components.length>0){
+            for(let i=0; i<components.length; i++){
+                let comp = components[i];
+                let node:PropNode = {
+                    aliasName:"[Component]",
+                    name:"_components."+i,
+                    value:Utils.getClassName(comp),
+                    type:"object",
+                    expandable:true,
+                    isGetter:true,
+                    isSetter:false,
+                    isPrivate:false,
+                }
+                result.push(node)
+            }
+        }
+        return result;
+    }
     
     getClassName(obj: Laya.Node): string {
         if(typeof obj == "number" || typeof obj == "string")return obj;
         let s = this;
+        let name = Utils.getClassName(obj);
         for(let i=0; i<s._clssNameArray.length; i++){
-            if(s._clssNameArray[i].class == obj.constructor)return s._clssNameArray[i].name;
+            if(s._clssNameArray[i].class == obj.constructor){
+                name = s._clssNameArray[i].name;
+                break;
+            }
         }
-        return Utils.getClassName(obj);
+        let components = obj["_components"]
+        if(components && components.length>0){
+            let compNames = [];
+            for(let i=0; i<components.length; i++){
+                let comp = components[i];
+                compNames.push(Utils.getClassName(comp))
+            }
+            name += ConstVars.SPECIAL_NAME_START+compNames.join(",")+ConstVars.SPECIAL_NAME_END;
+        }
+        return name;
     }
+
 }
