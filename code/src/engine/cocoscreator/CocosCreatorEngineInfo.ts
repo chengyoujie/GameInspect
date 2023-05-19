@@ -22,6 +22,14 @@ export class CocosCreatorEngineInfo implements IEngineInfo<cc.BaseNode>{
         s.version = window["CocosEngine"];
         s.baseCls = cc["BaseNode"] || cc["_BaseNode"] || cc["Node"] as any;//
         s._mask = new CocosCreatorStageMask(s);
+        
+       let obj = window["cc"];
+       if(obj){
+           for(let key in obj){
+                if(obj[key] && obj[key]["prototype"])
+                    obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
+           }
+       }
     }
 
     public set stage(value:cc.BaseNode){

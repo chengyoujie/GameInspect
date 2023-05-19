@@ -1,6 +1,7 @@
 import { Utils } from "../../common/Utils";
 import { IEngineInfo } from "../../common/IEngineInfo";
 import { PIXIStageRectMask } from "./PIXIStageRectMask";
+import { ConstVars } from "../../common/ConstVars";
 
 export class PIXIEngineInfo implements IEngineInfo<PIXI.DisplayObject>{
     name: string = "PIXI";
@@ -10,7 +11,6 @@ export class PIXIEngineInfo implements IEngineInfo<PIXI.DisplayObject>{
     private _mask:PIXIStageRectMask;
 
     private _haveInjectApplictionRender = false;
-    private _clssNameArray:{name:string, class:any}[] = [];
 
 
     haveEngine(): boolean {
@@ -51,21 +51,14 @@ export class PIXIEngineInfo implements IEngineInfo<PIXI.DisplayObject>{
 
         let obj = window["PIXI"];
         for(let key in obj){
-            s._clssNameArray.push({name:key, class:obj[key]})
+            if(obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
         }
     }
     start(onClickFun: (target: PIXI.DisplayObject) => void, onMouseMoveFun: (target: PIXI.DisplayObject) => void): void {
        
     }
 
-    getClassName(obj: PIXI.DisplayObject): string {
-        if(typeof obj == "number" || typeof obj == "string")return obj;
-        let s = this;
-        for(let i=0; i<s._clssNameArray.length; i++){
-            if(s._clssNameArray[i].class == obj.constructor)return s._clssNameArray[i].name;
-        }
-        return Utils.getClassName(obj);
-    }
     getChildren(obj: PIXI.DisplayObject): PIXI.DisplayObject[] {
         if(obj["children"])return obj["children"];
         return [];

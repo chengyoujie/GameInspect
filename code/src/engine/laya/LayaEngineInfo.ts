@@ -13,7 +13,7 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
     version: string;
     baseCls: typeof Laya.Node;
     private _mask:LayaStageRectMask;
-    private _clssNameArray:{name:string, class:any}[] = [];
+    // private _clssNameArray:{name:string, class:any}[] = [];
 
     getParent(obj: Laya.Node): Laya.Node {
         return obj.parent as Laya.Node;
@@ -73,7 +73,8 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         
         let obj = window["Laya"];
         for(let key in obj){
-            s._clssNameArray.push({name:key, class:obj[key]})
+            if(obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
         }
     }
 
@@ -137,12 +138,6 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         if(typeof obj == "number" || typeof obj == "string")return obj;
         let s = this;
         let name = Utils.getClassName(obj);
-        for(let i=0; i<s._clssNameArray.length; i++){
-            if(s._clssNameArray[i].class == obj.constructor){
-                name = s._clssNameArray[i].name;
-                break;
-            }
-        }
         let components = obj["_components"]
         if(components && components.length>0){
             let compNames = [];

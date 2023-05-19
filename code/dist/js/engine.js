@@ -35,6 +35,8 @@ var ConstVars = /** @class */ (function () {
     ConstVars.WINDOW_HAS_FIND_ENGINE = "$gameInspectHasFindEngine";
     /**引擎Manager的属性名 */
     ConstVars.ENGINE_MANAGER_PROP_NAME = "$gameInspectEngineManager";
+    /** */
+    ConstVars.GAMEINSPECT_CLASS_KEY = "$_gameInspect_class_key_$";
     //正式
     ConstVars.DEBUG = false;
     ConstVars.DEV = false;
@@ -322,6 +324,8 @@ var Utils = /** @class */ (function () {
             return obj._className; //Cocos2d-JS
         if (obj.__className && obj.__className.substring(0, 4).toLocaleLowerCase() != "laya")
             return obj.__className; //其他
+        if (obj[ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY])
+            return obj[ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY];
         if (obj.constructor && obj.constructor.name)
             return obj.constructor.name; //common
         return typeof obj;
@@ -452,16 +456,19 @@ var Utils = /** @class */ (function () {
     };
     Utils.totast = function (msg) {
         this._totastId++;
-        // let id = "gameInspectTotast"+this._totastId;
-        // var msgTag = $('<div id="'+id+'" class="totast"><span></span></div>');
-        // $("body").append(msgTag);
-        // msgTag.fadeIn("slow").find("span").html(msg);
-        // setTimeout(function(){
-        //     msgTag.fadeOut(800, ()=>{
-        //         console.log("移除： "+id)
-        //         msgTag.remove();
-        //     });
-        // },1200)
+        var id = "gameInspectTotast" + this._totastId;
+        var jquery = window["$"];
+        if (!jquery)
+            return;
+        var msgTag = jquery('<div id="' + id + '" class="totast"><span></span></div>');
+        jquery("body").append(msgTag);
+        msgTag.fadeIn("slow").find("span").html(msg);
+        setTimeout(function () {
+            msgTag.fadeOut(800, function () {
+                console.log("移除： " + id);
+                msgTag.remove();
+            });
+        }, 1200);
     };
     Utils.copy = function (value) {
         var textarea = document.getElementById("oInput");
@@ -739,6 +746,13 @@ var CocosCreatorEngineInfo = /** @class */ (function () {
         s.version = window["CocosEngine"];
         s.baseCls = cc["BaseNode"] || cc["_BaseNode"] || cc["Node"]; //
         s._mask = new CocosCreatorStageMask_1.CocosCreatorStageMask(s);
+        var obj = window["cc"];
+        if (obj) {
+            for (var key in obj) {
+                if (obj[key] && obj[key]["prototype"])
+                    obj[key]["prototype"][ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY] = key;
+            }
+        }
     };
     Object.defineProperty(CocosCreatorEngineInfo.prototype, "stage", {
         get: function () {
@@ -1401,13 +1415,12 @@ exports.CocosCreator3XMouseEvent = CocosCreator3XMouseEvent;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EgretEngineInfo = void 0;
-var Utils_1 = __webpack_require__(/*! ../../common/Utils */ "./src/common/Utils.ts");
 var EgretMouseEvent_1 = __webpack_require__(/*! ./EgretMouseEvent */ "./src/engine/egret/EgretMouseEvent.ts");
 var EgretStageRectMask_1 = __webpack_require__(/*! ./EgretStageRectMask */ "./src/engine/egret/EgretStageRectMask.ts");
+var ConstVars_1 = __webpack_require__(/*! ../../common/ConstVars */ "./src/common/ConstVars.ts");
 var EgretEngineInfo = /** @class */ (function () {
     function EgretEngineInfo() {
         this.name = "Egret";
-        this._clssNameArray = [];
     }
     EgretEngineInfo.prototype.haveEngine = function () {
         return !!(window["egret"] && window["egret"]["sys"] && window["egret"]["sys"]["$TempStage"]);
@@ -1420,7 +1433,8 @@ var EgretEngineInfo = /** @class */ (function () {
         s._mask = new EgretStageRectMask_1.EgretStageRectMask();
         var obj = window["egret"];
         for (var key in obj) {
-            s._clssNameArray.push({ name: key, class: obj[key] });
+            if (obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY] = key;
         }
     };
     EgretEngineInfo.prototype.start = function (onClickFun, onMouseMoveFun) {
@@ -1509,16 +1523,6 @@ var EgretEngineInfo = /** @class */ (function () {
         else if (egret_fps_panel) {
             egret_fps_panel.style.visibility = "hidden";
         }
-    };
-    EgretEngineInfo.prototype.getClassName = function (obj) {
-        if (typeof obj == "number" || typeof obj == "string")
-            return obj;
-        var s = this;
-        for (var i = 0; i < s._clssNameArray.length; i++) {
-            if (s._clssNameArray[i].class == obj.constructor)
-                return s._clssNameArray[i].name;
-        }
-        return Utils_1.Utils.getClassName(obj);
     };
     return EgretEngineInfo;
 }());
@@ -1741,8 +1745,8 @@ var LayaStageRectMask_1 = __webpack_require__(/*! ./LayaStageRectMask */ "./src/
 var LayaEngineInfo = /** @class */ (function () {
     function LayaEngineInfo() {
         this.name = "Laya";
-        this._clssNameArray = [];
     }
+    // private _clssNameArray:{name:string, class:any}[] = [];
     LayaEngineInfo.prototype.getParent = function (obj) {
         return obj.parent;
     };
@@ -1799,7 +1803,8 @@ var LayaEngineInfo = /** @class */ (function () {
         s._mask = new LayaStageRectMask_1.LayaStageRectMask(s);
         var obj = window["Laya"];
         for (var key in obj) {
-            s._clssNameArray.push({ name: key, class: obj[key] });
+            if (obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY] = key;
         }
     };
     LayaEngineInfo.prototype.start = function (onClickFun, onMouseMoveFun) {
@@ -1861,12 +1866,6 @@ var LayaEngineInfo = /** @class */ (function () {
             return obj;
         var s = this;
         var name = Utils_1.Utils.getClassName(obj);
-        for (var i = 0; i < s._clssNameArray.length; i++) {
-            if (s._clssNameArray[i].class == obj.constructor) {
-                name = s._clssNameArray[i].name;
-                break;
-            }
-        }
         var components = obj["_components"];
         if (components && components.length > 0) {
             var compNames = [];
@@ -2319,13 +2318,12 @@ exports.LayaStageRectMask = LayaStageRectMask;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PIXIEngineInfo = void 0;
-var Utils_1 = __webpack_require__(/*! ../../common/Utils */ "./src/common/Utils.ts");
 var PIXIStageRectMask_1 = __webpack_require__(/*! ./PIXIStageRectMask */ "./src/engine/pixi/PIXIStageRectMask.ts");
+var ConstVars_1 = __webpack_require__(/*! ../../common/ConstVars */ "./src/common/ConstVars.ts");
 var PIXIEngineInfo = /** @class */ (function () {
     function PIXIEngineInfo() {
         this.name = "PIXI";
         this._haveInjectApplictionRender = false;
-        this._clssNameArray = [];
     }
     PIXIEngineInfo.prototype.haveEngine = function () {
         if (!window["PIXI"] || !window["PIXI"]["Application"] || !window["PIXI"]["Ticker"])
@@ -2366,20 +2364,11 @@ var PIXIEngineInfo = /** @class */ (function () {
         s._mask = new PIXIStageRectMask_1.PIXIStageRectMask(s);
         var obj = window["PIXI"];
         for (var key in obj) {
-            s._clssNameArray.push({ name: key, class: obj[key] });
+            if (obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars_1.ConstVars.GAMEINSPECT_CLASS_KEY] = key;
         }
     };
     PIXIEngineInfo.prototype.start = function (onClickFun, onMouseMoveFun) {
-    };
-    PIXIEngineInfo.prototype.getClassName = function (obj) {
-        if (typeof obj == "number" || typeof obj == "string")
-            return obj;
-        var s = this;
-        for (var i = 0; i < s._clssNameArray.length; i++) {
-            if (s._clssNameArray[i].class == obj.constructor)
-                return s._clssNameArray[i].name;
-        }
-        return Utils_1.Utils.getClassName(obj);
     };
     PIXIEngineInfo.prototype.getChildren = function (obj) {
         if (obj["children"])

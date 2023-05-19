@@ -57,6 +57,7 @@ export class Utils{
         if(obj.__classname__)return obj.__classname__;//Cocos create
         if(obj._className)return obj._className;//Cocos2d-JS
         if(obj.__className && obj.__className.substring(0, 4).toLocaleLowerCase()!="laya")return obj.__className;//其他
+        if(obj[ConstVars.GAMEINSPECT_CLASS_KEY])return obj[ConstVars.GAMEINSPECT_CLASS_KEY];
         if(obj.constructor && obj.constructor.name)return obj.constructor.name;//common
         return typeof obj;
     }
@@ -177,16 +178,18 @@ export class Utils{
     private static _totastId = 0;
     public static totast(msg:string){
         this._totastId++;
-        // let id = "gameInspectTotast"+this._totastId;
-        // var msgTag = $('<div id="'+id+'" class="totast"><span></span></div>');
-        // $("body").append(msgTag);
-        // msgTag.fadeIn("slow").find("span").html(msg);
-        // setTimeout(function(){
-        //     msgTag.fadeOut(800, ()=>{
-        //         console.log("移除： "+id)
-        //         msgTag.remove();
-        //     });
-        // },1200)
+        let id = "gameInspectTotast"+this._totastId;
+        let jquery = window["$"];
+        if(!jquery)return;
+        var msgTag = jquery('<div id="'+id+'" class="totast"><span></span></div>');
+        jquery("body").append(msgTag);
+        msgTag.fadeIn("slow").find("span").html(msg);
+        setTimeout(function(){
+            msgTag.fadeOut(800, ()=>{
+                console.log("移除： "+id)
+                msgTag.remove();
+            });
+        },1200)
     }
 
     
