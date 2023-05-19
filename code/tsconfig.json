@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "noImplicitUseStrict": true,
+    "target": "es5",
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "lib": [
+      "es5",
+      "dom"
+    ],     
+    "outDir": "dist",
+    "moduleResolution":"node",
+
+    "strictNullChecks": false,
+    "sourceMap": false,
+    "skipLibCheck": true
+  },
+  "include": [
+    "src",
+    "libs"
+  ]
+}
