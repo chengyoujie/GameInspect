@@ -2,8 +2,8 @@ var path = require("path")
 const webpack = require("webpack")
 
 module.exports = {
-     mode:"development",//生产环境
-    // mode:"production",//发布环境
+    //  mode:"development",//生产环境
+    mode:"production",//发布环境
     // devtool: false,
     devtool: 'cheap-module-source-map',
     watch:true,
@@ -22,7 +22,7 @@ module.exports = {
         extensions: ["*", ".ts", ".js", ".json"]
     },
     output:{
-        path: path.resolve(__dirname, "./dist"),
+        path: path.resolve(__dirname, "./../dist"),
         filename: "js/[name].js"
     },
     plugins: [
@@ -41,8 +41,7 @@ module.exports = {
             },
             {
                 test:/\.(txt|vert|frag)$/,
-                use:"raw-loader"
-                    
+                use:"raw-loader"  
             },
             
         ]

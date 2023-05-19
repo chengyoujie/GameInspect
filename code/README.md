@@ -13,8 +13,8 @@
 
 ## 2. 使用
 
-1. 修改引擎代码后，在code/目录下执行  `webpack` 指令， 生成到 `dist/engine.js` 文件。
-2. 将`dist/engine.js`文件覆盖 插件的`dist/js/engine.js`文件， 刷新浏览器后即可使用。
+1. 修改引擎代码后，在code/目录下执行  `webpack` 指令， 生成到 `dist/js/engine.js` 文件。
+2. 将`dist/js/engine.js`文件覆盖到扩展安装目录下的`dist/js/engine.js`文件（如果安装目录和当前dist是同一目录则不需要覆盖）， 刷新浏览器后即可使用。
 
 ## 3. 接口说明
 

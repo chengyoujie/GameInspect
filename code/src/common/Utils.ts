@@ -48,7 +48,7 @@ export class Utils{
         }
     }
 
-    
+
     public static getClassName(obj:any){
         if(typeof obj == "number" || typeof obj == "string")return obj;
         if(obj["__class__"])return obj.__class__;//egret
