@@ -4,7 +4,7 @@
 ## 1. 说明
 
 仿照 `egret Inspect ` 制作的通用H5游戏列表查看器， 方便查看游戏结构， 修改属性，注入代码，查看shader,抓帧
-[GitHub(引擎部分的代码)](https://github.com/chengyoujie/GameInspect/code)
+[GitHub(引擎部分的代码)](https://github.com/chengyoujie/GameInspect/tree/master/code)
 ![总览](https://img-blog.csdnimg.cn/c50ae0b6cb1d427db6eedf1ec3fb2a4c.png)
 
 
