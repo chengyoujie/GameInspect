@@ -18,6 +18,6 @@
 
 ## 3. 接口说明
 
- 	1. 如自定义引擎，需要实现 `code/src/common/IEngineInfo.ts`中的`IEngineInfo<T>`接口(其中T为引擎的所有显示对象的基类)。  实现后可以在`EngineManager`的`init()`方法中添加到`defaultEngines`变量中，或者调用`register`方法注册进去。
- 	1. 如需要自定义插件的一些操作可以在window对象上新增`getGameInspectUserCostomEngine()`方法，返回实现`code/scr/common/IUserCostomEngine.ts`中的`IUserCostomEngine`接口。
+1. 如自定义引擎，需要实现 `code/src/common/IEngineInfo.ts`中的`IEngineInfo<T>`接口(其中T为引擎的所有显示对象的基类)。  实现后可以在`EngineManager`的`init()`方法中添加到`defaultEngines`变量中，或者调用`register`方法注册进去。
+2. 如需要自定义插件的一些操作可以在window对象上新增`getGameInspectUserCostomEngine()`方法，返回实现`code/scr/common/IUserCostomEngine.ts`中的`IUserCostomEngine`接口。
 
