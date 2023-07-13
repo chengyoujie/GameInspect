@@ -48,7 +48,7 @@ export class Utils{
         }
     }
 
-
+    
     public static getClassName(obj:any){
         if(typeof obj == "number" || typeof obj == "string")return obj;
         if(obj["__class__"])return obj.__class__;//egret
@@ -175,22 +175,6 @@ export class Utils{
         return str;
     }
 
-    private static _totastId = 0;
-    public static totast(msg:string){
-        this._totastId++;
-        let id = "gameInspectTotast"+this._totastId;
-        let jquery = window["$"];
-        if(!jquery)return;
-        var msgTag = jquery('<div id="'+id+'" class="totast"><span></span></div>');
-        jquery("body").append(msgTag);
-        msgTag.fadeIn("slow").find("span").html(msg);
-        setTimeout(function(){
-            msgTag.fadeOut(800, ()=>{
-                console.log("移除： "+id)
-                msgTag.remove();
-            });
-        },1200)
-    }
 
     
     public static copy(value:string):void
