@@ -66,16 +66,20 @@ export class Utils{
             if(owner["__class__"])return owner.__class__;//egret
             if(owner.__classname__)return owner.__classname__;//Cocos create
             if(owner._className)return owner._className;//Cocos2d-JS
+            let clsName:string;
+            if(owner.constructor && owner.constructor.name)clsName = owner.constructor.name;//common
+            if(clsName && clsName.length>2)return clsName;//猜测类名长度小于等于2的可能是压缩后的代码
             if(owner[ConstVars.GAMEINSPECT_CLASS_KEY])return owner[ConstVars.GAMEINSPECT_CLASS_KEY];
-            if(owner.constructor && owner.constructor.name)return owner.constructor.name;//common
-            return typeof owner;
+            return clsName || typeof owner;
         }
         if(obj.__classname__)return obj.__classname__;//Cocos create
         if(obj._className)return obj._className;//Cocos2d-JS
         if(obj.__className && obj.__className.substring(0, 4).toLocaleLowerCase()!="laya")return obj.__className;//其他
+        let clsName:string;
+        if(obj.constructor && obj.constructor.name)clsName = obj.constructor.name;//common
+        if(clsName && clsName.length>2)return clsName;//猜测类名长度小于等于2的可能是压缩后的代码
         if(obj[ConstVars.GAMEINSPECT_CLASS_KEY])return obj[ConstVars.GAMEINSPECT_CLASS_KEY];
-        if(obj.constructor && obj.constructor.name)return obj.constructor.name;//common
-        return typeof obj;
+        return clsName || typeof obj;
     }
 
     public static log(...args:string[]){
