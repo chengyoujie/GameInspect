@@ -25,11 +25,8 @@ export class EgretEngineInfo implements IEngineInfo<egret.DisplayObject> {
        s.stage = egret.sys.$TempStage;
        s._mask = new EgretStageRectMask();
        
-       let obj = window["egret"];
-       for(let key in obj){
-            if(obj[key] && obj[key]["prototype"])
-                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
-       }
+       Utils.setObjPropClassName(window["egret"])
+       Utils.setObjPropClassName(window["fgui"])
     }
     start(onClickFun: (target: egret.DisplayObject) => void, onMouseMoveFun: (target: egret.DisplayObject) => void): void {
         let s = this;

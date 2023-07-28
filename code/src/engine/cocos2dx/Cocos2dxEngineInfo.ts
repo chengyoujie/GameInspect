@@ -1,4 +1,5 @@
 import { IEngineInfo } from "../../common/IEngineInfo";
+import { Utils } from "../../common/Utils";
 import { Cocos2dxStageMask } from "./Cocos2dxStageMask";
 
 
@@ -18,6 +19,9 @@ export class Cocos2dxEngineInfo implements IEngineInfo<cc.BaseNode>{
         s.version = window["CocosEngine"];
         s.baseCls = cc["BaseNode"] || cc["_BaseNode"] || cc["Node"] as any;//
         s._mask = new Cocos2dxStageMask(s);
+        
+       Utils.setObjPropClassName(window["cc"])
+       Utils.setObjPropClassName(window["fgui"])
     }
 
     public set stage(value:cc.BaseNode){

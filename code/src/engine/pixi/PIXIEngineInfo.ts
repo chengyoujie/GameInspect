@@ -48,12 +48,9 @@ export class PIXIEngineInfo implements IEngineInfo<PIXI.DisplayObject>{
         s.version = PIXI.VERSION;
         s.baseCls = PIXI.DisplayObject;
         s._mask = new PIXIStageRectMask(s);
-
-        let obj = window["PIXI"];
-        for(let key in obj){
-            if(obj[key] && obj[key]["prototype"])
-                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
-        }
+        
+       Utils.setObjPropClassName(window["PIXI"])
+       Utils.setObjPropClassName(window["fgui"])
     }
     start(onClickFun: (target: PIXI.DisplayObject) => void, onMouseMoveFun: (target: PIXI.DisplayObject) => void): void {
        

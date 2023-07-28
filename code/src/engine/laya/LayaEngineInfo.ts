@@ -71,11 +71,8 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         s.version = Laya.version || Laya.LayaEnv.version;
         s._mask = new LayaStageRectMask(s);
         
-        let obj = window["Laya"];
-        for(let key in obj){
-            if(obj[key] && obj[key]["prototype"])
-                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
-        }
+       Utils.setObjPropClassName(window["Laya"])
+       Utils.setObjPropClassName(window["fgui"])
     }
 
     start(onClickFun:(target:Laya.Node)=>void, onMouseMoveFun:(target:Laya.Node)=>void): void {

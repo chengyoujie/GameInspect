@@ -48,12 +48,28 @@ export class Utils{
         }
     }
 
+    public static setObjPropClassName(obj:any){
+        if(!obj || typeof obj != "object")return;
+       for(let key in obj){
+            if(obj[key] && obj[key]["prototype"])
+                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
+       }
+    }
+
     
     public static getClassName(obj:any){
         if(typeof obj == "number" || typeof obj == "string")return obj;
         if(obj["__class__"])return obj.__class__;//egret
         if(obj.constructor  && obj.constructor["__classid"] && obj.constructor["__classid"].indexOf && obj.constructor["__classid"].indexOf("CLS_")!=0)return obj.constructor.__classid;//my game
-        if(obj["$owner"] && obj["$owner"].constructor) return obj["$owner"].constructor.name;//fgui
+        if(obj["$owner"]){//fgui
+            let owner = obj["$owner"]
+            if(owner["__class__"])return owner.__class__;//egret
+            if(owner.__classname__)return owner.__classname__;//Cocos create
+            if(owner._className)return owner._className;//Cocos2d-JS
+            if(owner[ConstVars.GAMEINSPECT_CLASS_KEY])return owner[ConstVars.GAMEINSPECT_CLASS_KEY];
+            if(owner.constructor && owner.constructor.name)return owner.constructor.name;//common
+            return typeof owner;
+        }
         if(obj.__classname__)return obj.__classname__;//Cocos create
         if(obj._className)return obj._className;//Cocos2d-JS
         if(obj.__className && obj.__className.substring(0, 4).toLocaleLowerCase()!="laya")return obj.__className;//其他
