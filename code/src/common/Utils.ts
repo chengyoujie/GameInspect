@@ -67,6 +67,8 @@ export class Utils{
             if(owner.__classname__)return owner.__classname__;//Cocos create
             if(owner._className)return owner._className;//Cocos2d-JS
             let clsName:string;
+            // if(obj.constructor && obj.constructor.name)clsName = obj.constructor.name;//common
+            // if(clsName.indexOf("fgui")!=-1)return clsName;
             if(owner.constructor && owner.constructor.name)clsName = owner.constructor.name;//common
             if(clsName && clsName.length>2)return clsName;//猜测类名长度小于等于2的可能是压缩后的代码
             if(owner[ConstVars.GAMEINSPECT_CLASS_KEY])return owner[ConstVars.GAMEINSPECT_CLASS_KEY];

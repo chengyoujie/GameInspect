@@ -7,6 +7,7 @@ import { LayaEngineInfo } from "./laya/LayaEngineInfo";
 import { Utils } from "../common/Utils";
 import { PIXIEngineInfo } from "./pixi/PIXIEngineInfo";
 import { ConstVars } from "../common/ConstVars";
+import { ThreeJSEngineInfo } from "./threejs/ThreeJSEngineInfo";
 
 export class EngineManager{
 
@@ -14,7 +15,7 @@ export class EngineManager{
 
     public static init(){
         let s = this;
-        let defaultEngines = [LayaEngineInfo,EgretEngineInfo,  CocosCreatorEngineInfo, Cocos2dxEngineInfo, PIXIEngineInfo];
+        let defaultEngines = [LayaEngineInfo,EgretEngineInfo,  CocosCreatorEngineInfo, Cocos2dxEngineInfo, PIXIEngineInfo, ThreeJSEngineInfo];
         for(let i=0; i<defaultEngines.length; i++){
             let engine = new defaultEngines[i]();
             if(!s._engineDic[engine.name]){//已经注册过的不在注册
@@ -46,7 +47,9 @@ export class EngineManager{
         let s = this;
         let treeNode = new TreeNode();
         treeNode.name = engineInfo.getClassName(obj);
-        treeNode.memberName = engineInfo.getObjName(obj);
+        //fgui的name*/
+        let fguiName = obj["$gobj"]&&obj["$gobj"].name?"("+obj["$gobj"].name+")":"";
+        treeNode.memberName = fguiName+engineInfo.getObjName(obj);
         treeNode.visible = engineInfo.getVisible(obj);
         treeNode.uid = obj.devUUID;
         let children = engineInfo.getChildren(obj)

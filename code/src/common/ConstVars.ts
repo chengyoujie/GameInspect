@@ -36,6 +36,8 @@ export class ConstVars{
     /** */
     public static GAMEINSPECT_CLASS_KEY = "$_gameInspect_class_key_$";
 
+    public static GAMEINSPECT_INIT = "$gameInspectInit";
+
 
     //正式
     public static DEBUG = false;
