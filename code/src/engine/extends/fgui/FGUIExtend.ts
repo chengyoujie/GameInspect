@@ -83,9 +83,9 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
         let fguiObj = s.getExtendNode(obj);
         if(fguiObj){
             objName = fguiObj.name || "";
-            if(objName)objName = "("+objName+")";
+            if(objName)return objName;
         }
-        return objName+s.engine.getObjName(obj)
+        return s.engine.getObjName(obj)
     }
 
     setPropValue(obj: any, key: string, value: any): void {
@@ -126,6 +126,7 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
 
     getExtendNode(obj: any): fgui.GObject {
         let s = this;
+        if(!obj)return null;
         let fguiObj = obj["$owner"] || obj["$gobj"]/**cocos */;
         if(fguiObj){
             if(!s._haveExtend){
