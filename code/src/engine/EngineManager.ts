@@ -26,9 +26,19 @@ export class EngineManager{
 
     public static register(engine:IEngineInfo<any>){
         let s = this;
-        if(!engine.getClassName){//如果没有设置 获取 propNode 则使用默认的
+        if(!engine.getClassName){//获取类名 如果没有设置 获取 propNode 则使用默认的
             engine.getClassName = (obj: any): string => {
                 return Utils.getClassName(obj);
+            }
+        }
+        if(!engine.getProps){//获取属性
+            engine.getProps = (obj:any, showPrivate?:boolean, showFunction?:boolean): {[name:string]:PropNode} => {
+                return s.getPropNodes(engine, obj, showPrivate, showFunction);
+            }
+        }
+        if(!engine.setPropValue){//设置属性
+            engine.setPropValue = (obj:any, key:string, value:any): void => {
+                obj[key] = value;
             }
         }
         s._engineDic[engine.name] = engine;
@@ -47,9 +57,7 @@ export class EngineManager{
         let s = this;
         let treeNode = new TreeNode();
         treeNode.name = engineInfo.getClassName(obj);
-        //fgui的name*/
-        let fguiName = obj["$gobj"]&&obj["$gobj"].name?"("+obj["$gobj"].name+")":"";
-        treeNode.memberName = fguiName+engineInfo.getObjName(obj);
+        treeNode.memberName = engineInfo.getObjName(obj);
         treeNode.visible = engineInfo.getVisible(obj);
         treeNode.uid = obj.devUUID;
         let children = engineInfo.getChildren(obj)

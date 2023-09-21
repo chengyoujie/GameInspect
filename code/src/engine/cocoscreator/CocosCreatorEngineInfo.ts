@@ -24,12 +24,19 @@ export class CocosCreatorEngineInfo implements IEngineInfo<cc.BaseNode>{
         s._mask = new CocosCreatorStageMask(s);
         
        Utils.setObjPropClassName(window["cc"])
-       Utils.setObjPropClassName(window["fgui"])
     }
 
     public set stage(value:cc.BaseNode){
 
 
+    }
+
+    getNotShowPropNames(obj: cc.BaseNode): string[] {
+        if(!obj)return null;
+        if(!obj["_uiProps"] || !obj["_uiProps"]["uiTransformComp"]){
+            return ["width", "height", "anchorX", "anchorY", "getAnchorPoint", "setAnchorPoint", "getContentSize", "setContentSize"]
+        }
+        return null;
     }
 
     public get stage():cc.BaseNode{

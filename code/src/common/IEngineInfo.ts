@@ -96,8 +96,15 @@ export interface IEngineInfo<T>{
      * @param showPrivate  是否显示私有变量
      * @param showFunction  是否显示方法
      */
-    // getProps?(obj:T, showPrivate?:boolean, showFunction?:boolean):{[name:string]:PropNode};
+    getProps?(obj:T, showPrivate?:boolean, showFunction?:boolean):{[name:string]:PropNode};
 
+    /**
+     * 修改属性
+     * @param obj 需要修改的对象
+     * @param key 属性名称
+     * @param value 属性值
+     */
+    setPropValue?(obj:T, key:string, value:any):void;
     /**
      * 修改属性节点  一般无需实现
      * @param obj 

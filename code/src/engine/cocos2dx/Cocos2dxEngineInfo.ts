@@ -21,7 +21,6 @@ export class Cocos2dxEngineInfo implements IEngineInfo<cc.BaseNode>{
         s._mask = new Cocos2dxStageMask(s);
         
        Utils.setObjPropClassName(window["cc"])
-       Utils.setObjPropClassName(window["fgui"])
     }
 
     public set stage(value:cc.BaseNode){

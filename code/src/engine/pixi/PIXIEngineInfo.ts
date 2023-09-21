@@ -50,7 +50,6 @@ export class PIXIEngineInfo implements IEngineInfo<PIXI.DisplayObject>{
         s._mask = new PIXIStageRectMask(s);
         
        Utils.setObjPropClassName(window["PIXI"])
-       Utils.setObjPropClassName(window["fgui"])
     }
     start(onClickFun: (target: PIXI.DisplayObject) => void, onMouseMoveFun: (target: PIXI.DisplayObject) => void): void {
        

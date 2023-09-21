@@ -26,7 +26,6 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
     haveEngine(): boolean {
         let s = this;
         let hasThreejsVer =  !!window["__THREE__"];
-        if(!hasThreejsVer)return false;
         //重写render记录当前所有的scene
         if(window[s.THREE_RENDER_NAME]){
             if(!s._hasReWriteRender){
@@ -64,7 +63,7 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
         }
         let hasThreeJsObj = !!window["THREE"] && !!window["THREE"]["Object3D"] && !!window[s.THREE_RENDER_NAME] && s.stage.children.length>0;
         if(hasThreeJsObj)return true;
-        if(!s._hasWarnSetGloablVar){
+        if(!s._hasWarnSetGloablVar && hasThreejsVer){
             let howSetInspectStr = "";
             if(!window[s.THREE_RENDER_NAME]&&!s._hasReWriteRender)howSetInspectStr += `window["${s.THREE_RENDER_NAME}"]=当前场景的渲染实例;//如：${s.THREE_RENDER_NAME}=new THREE.WebGLRenderer()\n`;
             if(!window["THREE"])howSetInspectStr = `import * as THREE from 'three';\nwindow["THREE"]=THREE;\n`+howSetInspectStr;
@@ -92,13 +91,15 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
     }
     init(): void {
         let s  = this;
-        s.version = window["__THREE__"];
+        s.version = window["__THREE__"] || "未发现";
         // s.stage =  {name:"所有场景", children:[]};
+        Utils.setObjectDevUUID(s.stage);
         s.baseCls = THREE.Object3D; 
         s._mask = new ThreeJSRectMask(s);
         s._stats = Stats();
         s._stats.showPanel( 0 ); // 0:
         document.body.appendChild( s._stats.dom );
+        Utils.setObjPropClassName(window["THREE"])
         
     }
     start(onClickFun: (target: THREE.Object3D) => void, onMouseMoveFun: (target: THREE.Object3D) => void): void {

@@ -72,7 +72,6 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
         s._mask = new LayaStageRectMask(s);
         
        Utils.setObjPropClassName(window["Laya"])
-       Utils.setObjPropClassName(window["fgui"])
     }
 
     start(onClickFun:(target:Laya.Node)=>void, onMouseMoveFun:(target:Laya.Node)=>void): void {

@@ -53,6 +53,7 @@ export class ThreeJSRectMask{
     public refush(){
         let s = this;
         if(!s._bindObj)return;
+        if(!s._bindObj.matrixWorld)return;
         s._tempPoint.x = s._tempPoint.y = s._tempPoint.z = 0;
         s._tempPoint.setFromMatrixPosition(s._bindObj.matrixWorld)
         s._box3.setFromObject(s._bindObj);

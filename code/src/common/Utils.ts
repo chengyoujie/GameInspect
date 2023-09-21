@@ -5,12 +5,38 @@ export class Utils{
     private static _uid:number = 0;
     /**防止cocos 把console.log 重写了 */
     public static ConsoleLogFun = console.log;
+    private static _uid2Obj: {[uid: string]: any} = {};
 
     public static getUID(){
         let s = this;
         s._uid ++;
         return s._uid;
     }
+
+    
+    public static setObjectDevUUID(obj:Object){
+        let s = this;
+        if(!obj)return;
+        if(!obj.hasOwnProperty("devUUID")){
+            Object.defineProperty(obj, "devUUID", {
+                get() {
+                    let uid:number = this['$_DevUUID'];
+                    if (!uid) {
+                        uid = this['$_DevUUID'] = s.getUID();
+                        s._uid2Obj[uid] = this;
+                    }
+                    return uid;
+                },
+                enumerable: false
+            })
+        }
+    }
+
+    public static getObjectByDevUUID(uid:number){
+        return this._uid2Obj[uid];
+    }
+
+
 
     
     public static stringifyValue(value:any):string {

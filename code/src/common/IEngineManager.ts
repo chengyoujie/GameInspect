@@ -21,6 +21,6 @@ export interface IEngineManager{
     getTreeNode(engineInfo:IEngineInfo<any>, obj: any): TreeNode;
 
     /**获取显示对象的属性信息 */
-    getPropNodes(engineInfo:IEngineInfo<any>, obj:any, showPrivate:boolean, showFunction:boolean):{[name:string]:PropNode}
+    // getPropNodes(engineInfo:IEngineInfo<any>, obj:any, showPrivate:boolean, showFunction:boolean):{[name:string]:PropNode}
 
 }
