@@ -77,8 +77,16 @@ export class Utils{
     public static setObjPropClassName(obj:any){
         if(!obj || typeof obj != "object")return;
        for(let key in obj){
-            if(obj[key] && obj[key]["prototype"])
-                obj[key]["prototype"][ConstVars.GAMEINSPECT_CLASS_KEY] = key;
+            if(obj[key] && obj[key]["prototype"]){
+                let propObj = obj[key]["prototype"]
+                if(propObj[ConstVars.GAMEINSPECT_CLASS_KEY])continue;
+                Object.defineProperty(propObj, ConstVars.GAMEINSPECT_CLASS_KEY, {
+                    get:function(){
+                        return key;
+                    },
+                    enumerable:false,
+                })
+            }
        }
     }
 
