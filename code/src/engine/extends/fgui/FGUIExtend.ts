@@ -93,6 +93,7 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
         let fguiObj = s.getExtendNode(obj);
         if(fguiObj){
             fguiObj[key] = value;
+            return;
         }
         s.engine.setPropValue(obj,key, value)
     }
@@ -120,6 +121,7 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
         let fguiObj = s.getExtendNode(obj);
         if(fguiObj){
             fguiObj.visible = value;
+            return;
         }
         s.engine.setVisible(obj, value)
     }
