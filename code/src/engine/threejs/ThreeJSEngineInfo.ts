@@ -1,4 +1,5 @@
 import { IEngineInfo } from "../../common/IEngineInfo";
+import { MessageType } from "../../common/Message";
 import { PropNode } from "../../common/TreeNode";
 import { Utils } from "../../common/Utils";
 import { ThreeJSRectMask } from "./ThreeJSRectMask";
@@ -36,6 +37,13 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
                     if(s.stage.children.indexOf(scene) == -1){
                         s.stage.children.push(scene);
                         s._scene2Camera[scene.id] = camera;
+                        let data = {
+                            from:"EngineExt",
+                            name:"threejs",
+                            type:MessageType.InitStageDataReq,
+                            data:null
+                        }
+                        window.postMessage(data, "*")
                     }
                     if(s._stats)s._stats.begin();
                     oldRenderFun.call(this, scene, camera)
@@ -52,6 +60,13 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
                         if(s.stage.children.indexOf(scene) == -1){
                             s.stage.children.push(scene);
                             s._scene2Camera[scene.id] = camera;
+                            let data = {
+                                from:"EngineExt",
+                                name:"threejs",
+                                type:MessageType.InitStageDataReq,
+                                data:null
+                            }
+                            window.postMessage(data, "*")
                         }
                         if(s._stats)s._stats.begin();
                         renderClsFun.call(this, scene, camera)
@@ -93,7 +108,7 @@ export class ThreeJSEngineInfo implements IEngineInfo<THREE.Object3D>{
         let s  = this;
         s.version = window["__THREE__"] || "未发现";
         // s.stage =  {name:"所有场景", children:[]};
-        Utils.setObjectDevUUID(s.stage);
+        // Utils.setObjectDevUUID(s.stage);
         s.baseCls = THREE.Object3D; 
         s._mask = new ThreeJSRectMask(s);
         s._stats = Stats();

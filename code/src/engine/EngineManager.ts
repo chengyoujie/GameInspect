@@ -78,7 +78,7 @@ export class EngineManager{
             let keys = Reflect.ownKeys(temp)
             for(let key in keys){
                 let propName = keys[key];
-                if(propName == "devUUID")continue;
+                if(propName == "devUUID"||propName == "$_DevUUID"||propName == ConstVars.GAMEINSPECT_CLASS_KEY)continue;
                 if(typeof propName !=  "string")continue;
                 if(filterProps && filterProps.indexOf(propName) != -1)continue;
                 let propNode:PropNode = s.getOnePropNode(obj, temp, propName);
