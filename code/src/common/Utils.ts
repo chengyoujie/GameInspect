@@ -79,15 +79,25 @@ export class Utils{
        for(let key in obj){
             if(obj[key] && obj[key]["prototype"]){
                 let propObj = obj[key]["prototype"]
-                if(propObj[ConstVars.GAMEINSPECT_CLASS_KEY])continue;
                 Object.defineProperty(propObj, ConstVars.GAMEINSPECT_CLASS_KEY, {
                     get:function(){
                         return key;
                     },
                     enumerable:false,
+                    configurable:true,
+                    
                 })
             }
        }
+    }
+
+    private static setClassKey(obj:object, classKey:string){
+        Object.defineProperty(obj, ConstVars.GAMEINSPECT_CLASS_KEY, {
+            get:function(){
+                return classKey;
+            },
+            enumerable:false,
+        })
     }
 
     

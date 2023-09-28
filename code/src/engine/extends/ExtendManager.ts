@@ -1,6 +1,6 @@
 import { IEngineInfo } from "../../common/IEngineInfo";
 import { FGUIExtend } from "./fgui/FGUIExtend";
-import { IEngineExtend } from "./IEngineExtend";
+import { IEngineExtend } from "../../common/IEngineExtend";
 
 /**
  * 扩展

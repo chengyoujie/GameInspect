@@ -8,6 +8,7 @@ import { Utils } from "../common/Utils";
 import { PIXIEngineInfo } from "./pixi/PIXIEngineInfo";
 import { ConstVars } from "../common/ConstVars";
 import { ThreeJSEngineInfo } from "./threejs/ThreeJSEngineInfo";
+import { ExtendManager } from "./extends/ExtendManager";
 
 export class EngineManager{
 
@@ -131,4 +132,7 @@ export class EngineManager{
 
 
 }
+//引擎管理
 window[ConstVars.ENGINE_MANAGER_PROP_NAME] = EngineManager;
+//扩展管理
+window[ConstVars.ENGINE_EXTEND_PROP_NAME] = ExtendManager;

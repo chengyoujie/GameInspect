@@ -1,7 +1,7 @@
 import { IEngineInfo } from "../../../common/IEngineInfo";
 import { PropNode } from "../../../common/TreeNode";
 import { Utils } from "../../../common/Utils";
-import { IEngineExtend } from "../IEngineExtend";
+import { IEngineExtend } from "../../../common/IEngineExtend";
 
 /**
  * 
@@ -31,6 +31,8 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
         let s = this;
         return true;
     }
+
+
     // getNotShowPropNames?(obj: any): string[] {
     //     throw new Error("Method not implemented.");
     // }

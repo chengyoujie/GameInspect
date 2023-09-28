@@ -33,6 +33,8 @@ export class ConstVars{
     public static WINDOW_HAS_FIND_ENGINE = "$gameInspectHasFindEngine"
     /**引擎Manager的属性名 */
     public static ENGINE_MANAGER_PROP_NAME = "$gameInspectEngineManager"
+    /**拓展引擎Manager的属性名 */
+    public static ENGINE_EXTEND_PROP_NAME = "$gameInspectExtendManager"
     /** */
     public static GAMEINSPECT_CLASS_KEY = "$_gameInspect_class_key_$";
 

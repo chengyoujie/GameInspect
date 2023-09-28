@@ -1,4 +1,4 @@
-import { IEngineInfo } from "../../common/IEngineInfo";
+import { IEngineInfo } from "./IEngineInfo";
 
 type EngineInfo<T> = {[P in keyof T ]?:T[P]}
 
