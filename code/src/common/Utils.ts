@@ -111,8 +111,8 @@ export class Utils{
         if(typeof obj == "number" || typeof obj == "string")return obj;
         if(obj["__class__"])return obj.__class__;//egret
         if(obj.constructor  && obj.constructor["__classid"] && obj.constructor["__classid"].indexOf && obj.constructor["__classid"].indexOf("CLS_")!=0)return obj.constructor.__classid;//my game
-        if(obj["$owner"]){//fgui
-            let owner = obj["$owner"]
+        if(obj["$owner"] || obj["$gobj"]){//fgui
+            let owner = obj["$owner"]||obj["$gobj"]
             if(owner["__class__"])return owner.__class__;//egret
             if(owner.__classname__)return owner.__classname__;//Cocos create
             if(owner._className)return owner._className;//Cocos2d-JS

@@ -2,6 +2,7 @@ import { IEngineInfo } from "../../../common/IEngineInfo";
 import { PropNode } from "../../../common/TreeNode";
 import { Utils } from "../../../common/Utils";
 import { IEngineExtend } from "../../../common/IEngineExtend";
+import { ConstVars } from "../../../common/ConstVars";
 
 /**
  * 
@@ -40,10 +41,25 @@ export class FGUIExtend implements IEngineExtend<fgui.GObject>{
         let s = this;
         let fguiObj = s.getExtendNode(obj);
         if(fguiObj){
-            return Utils.getClassName(fguiObj);
+            return s.getFguiClassName(fguiObj);
         }
         return s.engine.getClassName(obj);
     }
+
+
+    private getFguiClassName(owner:any){
+        let clsName:string;
+        // if(obj.constructor && obj.constructor.name)clsName = obj.constructor.name;//common
+        // if(clsName.indexOf("fgui")!=-1)return clsName;
+        if(owner.constructor && owner.constructor.name)clsName = owner.constructor.name;//common
+        if(clsName && clsName.length>2)return clsName;//猜测类名长度小于等于2的可能是压缩后的代码
+        if(owner[ConstVars.GAMEINSPECT_CLASS_KEY])return owner[ConstVars.GAMEINSPECT_CLASS_KEY];
+        if(owner["__class__"])return owner.__class__;//egret
+        if(owner.__classname__)return owner.__classname__;//Cocos create
+        if(owner._className)return owner._className;//Cocos2d-JS
+        return clsName || typeof owner;
+    }
+
     getNotShowPropNames(obj: egret.DisplayObject): string[] {
         let s = this;
         let fguiObj = s.getExtendNode(obj);
