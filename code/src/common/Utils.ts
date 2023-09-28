@@ -2,15 +2,18 @@ import { ConstVars } from "./ConstVars";
 import { ContentURLS } from "./UserCodeInfo";
 
 export class Utils{
-    private static _uid:number = 0;
+    // private static _uid:number = 0;
     /**防止cocos 把console.log 重写了 */
     public static ConsoleLogFun = console.log;
-    private static _uid2Obj: {[uid: string]: any} = {};
+    // private static _uid2Obj: {[uid: string]: any} = {};
+    private static windowUidPropName = "$gameInspectUid";
+    private static windowUidDicPropName = "$gameInspectUidDic";
 
     public static getUID(){
         let s = this;
-        s._uid ++;
-        return s._uid;
+        if(!window[s.windowUidPropName])window[s.windowUidPropName] = 0;
+        window[s.windowUidPropName] ++;
+        return window[s.windowUidPropName];
     }
 
     
@@ -23,7 +26,8 @@ export class Utils{
                     let uid:number = this['$_DevUUID'];
                     if (!uid) {
                         uid = this['$_DevUUID'] = s.getUID();
-                        s._uid2Obj[uid] = this;
+                        if(!window[s.windowUidDicPropName])window[s.windowUidDicPropName] = {};
+                        window[s.windowUidDicPropName][uid] = this;
                     }
                     return uid;
                 },
@@ -33,7 +37,9 @@ export class Utils{
     }
 
     public static getObjectByDevUUID(uid:number){
-        return this._uid2Obj[uid];
+        let s = this;
+        if(!window[s.windowUidDicPropName])return null;
+        return window[s.windowUidDicPropName][uid];
     }
 
 
