@@ -1,9 +1,9 @@
 import { IEngineInfo } from "../../common/IEngineInfo";
 
 export class LayaMouseEvent{
-    public static EventPreName = "layaInspactEvent_";
-    public static MOUSE_MOVE:string;// = DevMouseEvent.EventPreName+Laya.Event.MOUSE_MOVE;
-    public static MOUSE_DOWN:string;// = DevMouseEvent.EventPreName+Laya.Event.MOUSE_DOWN;
+    // public static EventPreName = "layaInspactEvent_";
+    // public static MOUSE_MOVE:string;// = DevMouseEvent.EventPreName+Laya.Event.MOUSE_MOVE;
+    // public static MOUSE_DOWN:string;// = DevMouseEvent.EventPreName+Laya.Event.MOUSE_DOWN;
 
     private static _point:Laya.Point;
     private static _target:Laya.Node;
@@ -15,13 +15,15 @@ export class LayaMouseEvent{
 
     private static _engine:IEngineInfo<Laya.Node>;
 
+    public static onMouseEvent:(event:string, target:Laya.Node)=>void;
+
     public static start(engine:IEngineInfo<Laya.Node>){
         let s = this;
         s._engine = engine;
         s._point = new Laya.Point();
         s._rect = new Laya.Rectangle();
-        s.MOUSE_MOVE = LayaMouseEvent.EventPreName+Laya.Event.MOUSE_MOVE;
-        s.MOUSE_DOWN = LayaMouseEvent.EventPreName+Laya.Event.MOUSE_DOWN;
+        // s.MOUSE_MOVE = LayaMouseEvent.EventPreName+Laya.Event.MOUSE_MOVE;
+        // s.MOUSE_DOWN = LayaMouseEvent.EventPreName+Laya.Event.MOUSE_DOWN;
         Laya.stage.on(Laya.Event.MOUSE_DOWN, s, s.handleMouseDownEvent)
         Laya.stage.on(Laya.Event.MOUSE_UP, s, s.handleMouseUPEvent)
         Laya.stage.on(Laya.Event.MOUSE_DOWN, s, s.handleMouseEvent)
@@ -88,7 +90,10 @@ export class LayaMouseEvent{
             mouseY = Laya.InputManager.mouseY;
         }
         s.check(Laya.stage, mouseX, mouseY, mouseX, mouseY);
-        Laya.stage.event(LayaMouseEvent.EventPreName+e.type, s._target)
+        // Laya.stage.event(LayaMouseEvent.EventPreName+e.type, s._target)//laya3.0会导致 _setBit(NodeFlags.CHECK_INPUT, true) 影响点击效果
+        if(LayaMouseEvent.onMouseEvent){
+            LayaMouseEvent.onMouseEvent.call(s, e.type, s._target)
+        }
     }
     
     private static check(sp: Laya.Sprite, mouseX: number, mouseY: number, stageX:number, stageY): boolean {
@@ -105,6 +110,9 @@ export class LayaMouseEvent{
         if (scrollRect) {
             this._rect.setTo(scrollRect.x, scrollRect.y, scrollRect.width, scrollRect.height);
             if (!this._rect.contains(mouseX, mouseY)) return false;
+        }
+        if(sp["$owner"] && this._engine.getClassName(sp["$owner"]) == "GGroup"){//laya + fgui时 高级组会遮挡字对象
+            return;
         }
         let notCheckChild = false;//不响应鼠标的对象
         if(Laya.Label && sp instanceof Laya.Label)notCheckChild = true;

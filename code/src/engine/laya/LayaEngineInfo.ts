@@ -53,7 +53,9 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
     // getPropNames(obj: Laya.Node): string[] {
     //    return []
     // } 
-
+    getNotShowPropNames(obj: Laya.Node){
+        return ["dragSupport"]//dragSupport 获取的时候会创建一个DragSupport对象， 导致obj会有鼠标交互位setBit(NodeFlags.CHECK_INPUT, true);
+    }
 
     clearMask(): void {
          let s = this;
@@ -77,13 +79,19 @@ export class LayaEngineInfo   implements IEngineInfo<Laya.Node>{
     start(onClickFun:(target:Laya.Node)=>void, onMouseMoveFun:(target:Laya.Node)=>void): void {
         let s = this;
         LayaMouseEvent.start(this);
-        
-        Laya.stage.on(LayaMouseEvent.MOUSE_DOWN, this, (target:Laya.Node)=>{
-            onClickFun.call(s, target)
-        })
-        Laya.stage.on(LayaMouseEvent.MOUSE_MOVE, this, (target:Laya.Node)=>{
-            onMouseMoveFun.call(s, target)
-        })
+        LayaMouseEvent.onMouseEvent = function(type:string, target:Laya.Node){
+            if(type == Laya.Event.MOUSE_DOWN){
+                onClickFun.call(s, target)
+            }else if(type == Laya.Event.MOUSE_MOVE){
+                onMouseMoveFun.call(s, target)
+            }
+        }
+        // Laya.stage.on(LayaMouseEvent.MOUSE_DOWN, this, (target:Laya.Node)=>{
+            
+        // })
+        // Laya.stage.on(LayaMouseEvent.MOUSE_MOVE, this, (target:Laya.Node)=>{
+           
+        // })
     }
     getChildren(obj: Laya.Node): Laya.Node[] {
         return obj["_children"] || obj["_childs"] || []
