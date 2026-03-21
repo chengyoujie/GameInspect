@@ -13,7 +13,7 @@ export class CocosCreator3XDraw implements ICocosCreatorDrawAdapter{
         s._engine = engine;
     }
     getGraphicsComponentCls(): typeof cc.Component {
-        return cc.GraphicsComponent;
+        return cc.Graphics || cc.GraphicsComponent;
     }
     getDrawPositionInfo(obj: cc.BaseNode): cc.math.Rect {
         let s = this;

@@ -95,11 +95,13 @@ export class CocosCreator3XMouseEvent implements ICocosCreatorMouseEventAdapter{
         let components = obj["_components"]
         if(!components || components.length==0)return false;
         let hasRender = false;
+        let render38Cls = (cc.Label.prototype as any)?.__proto__?.constructor
         for(let i=0; i<components.length; i++){
             let comp = components[i];
             if(!comp)continue;
             if(comp instanceof cc.Camera || comp instanceof cc.Canvas)return false;
-            if(comp instanceof cc.RenderableComponent && !(comp instanceof cc.Mask))hasRender = true;
+            if(cc.RenderableComponent && comp instanceof cc.RenderableComponent && !(comp instanceof cc.Mask))hasRender = true;
+            if(render38Cls && comp instanceof render38Cls && !(comp instanceof cc.Mask))hasRender = true;
         }
         return hasRender;
     }
